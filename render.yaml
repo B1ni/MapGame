@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: map-game
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: Hosting__Mode
+        value: Internet
+      - key: Hosting__FileLogs
+        value: "false"
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2f6f2">
+  <title>Map Game — slepá mapa sveta</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/diagnostics.js"></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Map Game — úvod">
+      <span class="brand-mark" aria-hidden="true">M</span>
+      <span>MAP <strong>GAME</strong></span>
+    </a>
+    <span id="hostingBadge" class="offline-badge">Map Game</span>
+  </header>
+
+  <main>
+    <section id="homePanel" class="home-panel">
+      <div class="intro">
+        <p class="eyebrow">SLEPÁ MAPA · ZEMEPISNÝ KVÍZ</p>
+        <h1>Poznáš svet<br><span>štát po štáte?</span></h1>
+        <p class="intro-copy">Vyber si mapu, píš názvy štátov a sleduj, ako sa postupne vyfarbujú. Hraj sám alebo pozvi kamarátov cez odkaz.</p>
+        <div class="region-chips" aria-label="Dostupné mapy">
+          <span>Európa</span><span>Ázia</span><span>Afrika</span><span>Amerika</span><span>USA</span>
+        </div>
+      </div>
+
+      <div class="setup-grid">
+        <section class="card setup-card">
+          <div class="card-heading">
+            <span class="number-badge">01</span>
+            <div><p class="eyebrow">PRE JEDNÉHO HRÁČA</p><h2>Začni hrať</h2></div>
+          </div>
+          <label for="singleRegion">Vyber mapu</label>
+          <select id="singleRegion"></select>
+
+          <label for="singleMode">Herný režim</label>
+          <select id="singleMode">
+            <option value="time">Na čas</option>
+            <option value="lives">Na životy</option>
+          </select>
+
+          <div id="singleTimeOptions" class="option-row">
+            <label for="singleMinutes">Časový limit</label>
+            <div class="number-input"><input id="singleMinutes" type="number" min="1" max="120" value="10"><span>min</span></div>
+          </div>
+          <div id="singleLivesOptions" class="option-row" hidden>
+            <label for="singleLives">Počet životov</label>
+            <div class="number-input"><input id="singleLives" type="number" min="1" max="5" value="3"><span>životy</span></div>
+          </div>
+          <button id="startSingle" class="button button-primary button-wide">Spustiť hru <span aria-hidden="true">→</span></button>
+          <p id="singleError" class="error-text" role="alert"></p>
+        </section>
+
+        <section class="card setup-card multiplayer-card">
+          <div class="card-heading">
+            <span class="number-badge number-badge-green">02</span>
+            <div><p class="eyebrow">PRE VIAC HRÁČOV</p><h2>Hrajte spolu</h2></div>
+          </div>
+          <p id="multiplayerCopy" class="card-copy">Vytvor hru a pozvi hráčov cez webový odkaz.</p>
+          <label for="playerName">Tvoje meno v multiplayeri</label>
+          <input id="playerName" type="text" maxlength="24" placeholder="Zadaj svoje meno" autocomplete="nickname" required>
+          <p id="invitationHint" class="muted-copy" hidden></p>
+          <label for="hostRegion">Mapa pre hru</label>
+          <select id="hostRegion"></select>
+          <div class="option-row">
+            <label for="hostMinutes">Časový limit</label>
+            <div class="number-input"><input id="hostMinutes" type="number" min="1" max="120" value="5"><span>min</span></div>
+          </div>
+          <button id="createRoom" class="button button-primary button-wide">Vytvoriť hru <span aria-hidden="true">→</span></button>
+          <div class="join-divider"><span>alebo sa pripoj k hre</span></div>
+          <div id="lanJoinOptions" hidden>
+          <label for="hostAddressInput">Adresa hostiteľa <span class="optional">(pre stiahnutú hru)</span></label>
+          <input id="hostAddressInput" type="url" placeholder="http://192.168.1.25:5080" autocomplete="url">
+          <p class="muted-copy join-help">Pri otvorení webového odkazu nechaj toto pole prázdne. V stiahnutej hre zadaj LAN adresu hostiteľa.</p>
+          </div>
+          <div class="join-row">
+            <label class="visually-hidden" for="roomCodeInput">ID hry</label>
+            <input id="roomCodeInput" type="text" maxlength="6" placeholder="ID hry" autocomplete="off">
+            <button id="joinRoom" class="button button-secondary">Pripojiť</button>
+          </div>
+          <p id="multiplayerError" class="error-text" role="alert"></p>
+        </section>
+      </div>
+    </section>
+
+    <section id="lobbyPanel" class="card lobby-panel" hidden>
+      <div class="card-heading">
+        <span class="number-badge number-badge-green">MP</span>
+        <div><p id="lobbyMode" class="eyebrow">MULTIPLAYER</p><h2>Čakáreň</h2></div>
+      </div>
+      <p class="card-copy">Pošli kamarátom webový odkaz. Každý zadá vlastné meno. Hostiteľ musí zostať pripojený počas zápasu.</p>
+      <div class="room-id-wrap"><span>ID HRY</span><strong id="roomCodeDisplay"></strong></div>
+      <div id="inviteSection" class="invite-section" hidden>
+        <div id="lanNetworkOptions" hidden>
+        <label for="networkAddress">Sieť hostiteľa</label>
+        <select id="networkAddress"></select>
+        <p class="muted-copy">Vyber adresu svojej Wi-Fi/LAN siete, nie VPN alebo virtuálneho adaptéra. Ak sa odkaz neotvorí, povoľ MapGame vo Windows Firewall pre súkromnú sieť. Nepoužívajte hosťovskú Wi-Fi s izoláciou zariadení.</p>
+        </div>
+        <label for="inviteLink">Webový odkaz (hranie v prehliadači)</label>
+        <div class="join-row"><input id="inviteLink" type="text" readonly><button id="copyInvite" class="button button-secondary">Kopírovať</button></div>
+        <div id="lanServerOptions" hidden>
+        <label for="serverAddress">Adresa hostiteľa (pre stiahnutú hru)</label>
+        <input id="serverAddress" type="text" readonly>
+        </div>
+      </div>
+      <p class="players-label">Hráči v čakárni</p>
+      <ul id="playerList" class="player-list"></ul>
+      <p id="lobbyStatus" class="muted-copy">Čaká sa na hostiteľa.</p>
+      <div id="hostStartOptions" class="host-start-options" hidden>
+        <p class="muted-copy">Hru môže spustiť iba jej hostiteľ.</p>
+        <button id="startMultiplayer" class="button button-primary button-wide">Spustiť hru <span aria-hidden="true">→</span></button>
+      </div>
+      <p id="lobbyError" class="error-text" role="alert"></p>
+      <button id="leaveLobby" class="text-button">Opustiť čakáreň</button>
+    </section>
+
+    <section id="gamePanel" class="game-panel" hidden>
+      <div class="game-heading">
+        <div>
+          <p id="gameModeLabel" class="eyebrow"></p>
+          <h1 id="gameTitle"></h1>
+        </div>
+        <div class="game-status">
+          <div id="timerBlock" class="timer-block"><span>ZOSTÁVA</span><strong id="timer">--:--</strong></div>
+          <div id="livesBlock" class="lives-block" hidden><span>ŽIVOTY</span><strong id="livesDisplay"></strong></div>
+          <button id="endGame" class="button button-danger">Ukončiť hru</button>
+        </div>
+      </div>
+
+      <div id="inviteGameBanner" class="invite-game-banner" hidden></div>
+      <div class="map-card">
+        <div class="map-caption">
+          <span class="map-dot"></span><span id="mapHint">Slepá mapa</span>
+          <div class="map-controls" aria-label="Ovládanie mapy">
+            <button id="zoomOut" class="map-control" type="button" aria-label="Oddialiť mapu" title="Oddialiť">−</button>
+            <button id="zoomReset" class="map-control map-zoom-label" type="button" aria-label="Obnoviť priblíženie" title="Obnoviť priblíženie">100%</button>
+            <button id="zoomIn" class="map-control" type="button" aria-label="Priblížiť mapu" title="Priblížiť">+</button>
+            <span class="map-pan-help">Ťahaj mapu na posúvanie · koliesko na priblíženie</span>
+          </div>
+        </div>
+        <div id="mapContainer" class="map-container">
+          <svg id="map" viewBox="0 0 1000 680" role="img" aria-label="Slepá mapa vybraného regiónu" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+
+      <form id="guessForm" class="guess-form">
+        <label for="guessInput">Napíš názov štátu</label>
+        <div class="guess-row">
+          <input id="guessInput" type="text" maxlength="100" placeholder="Napríklad Slovensko" autocomplete="off" autocapitalize="words">
+          <button class="button button-primary" type="submit">Odpovedať <span aria-hidden="true">↵</span></button>
+        </div>
+        <p id="guessFeedback" class="feedback" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="endPanel" class="card end-panel" hidden>
+      <p class="eyebrow">KONIEC HRY</p>
+      <h1 id="endTitle">Výborne!</h1>
+      <p id="endSummary" class="end-summary"></p>
+      <div id="leaderboardWrap" hidden>
+        <h2>Výsledky hry</h2>
+        <ol id="leaderboard" class="leaderboard"></ol>
+      </div>
+      <button id="newGame" class="button button-primary">Späť na začiatok</button>
+    </section>
+  </main>
+
+  <footer>
+    <span>Map Game · Zemepisný kvíz</span>
+    <button id="downloadDiagnostics" class="text-button" type="button">Stiahnuť diagnostiku pripojenia</button>
+    <a href="/data/NATURAL-EARTH-LICENSE.txt">Mapa: Natural Earth</a>
+    <a href="/data/ODbL-1.0.txt">Dáta štátov: ODbL</a>
+  </footer>
+</body>
+</html>
