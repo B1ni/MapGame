@@ -35,14 +35,49 @@ public sealed class GameCatalog
     public static GameCatalog Load(string path)
     {
         using var stream = File.OpenRead(path);
-        return Load(stream);
+        using var names = File.OpenRead(Path.Combine(Path.GetDirectoryName(path)!, "country-names.json"));
+        return Load(stream, names);
     }
 
     public static GameCatalog Load(Stream stream)
     {
+        using var names = typeof(GameCatalog).Assembly.GetManifestResourceStream("MapGame.Data.country-names.json")
+            ?? throw new InvalidDataException("The localized name catalog is missing.");
+        return Load(stream, names);
+    }
+
+    public static GameCatalog Load(Stream stream, Stream names)
+    {
         var data = JsonSerializer.Deserialize<MapCatalogDocument>(stream, JsonOptions)
             ?? throw new InvalidDataException("The map data file is empty.");
-        return new GameCatalog(data.Regions);
+        var labels = JsonSerializer.Deserialize<LocalizedCatalogDocument>(names, JsonOptions)
+            ?? throw new InvalidDataException("The localized name catalog is empty.");
+        var regionIds = data.Regions.Select(region => region.Id).ToArray();
+        var featureIds = data.Regions.SelectMany(region => region.Features).Select(feature => feature.Id).ToArray();
+        ValidateLabels(regionIds, labels.Regions);
+        ValidateLabels(featureIds, labels.Features);
+
+        return new GameCatalog(data.Regions.Select(region => new GameRegion
+        {
+            Id = region.Id,
+            Localizations = labels.Regions[region.Id].Names,
+            Features = region.Features.Select(feature => new MapFeature
+            {
+                Id = feature.Id,
+                Geometry = feature.Geometry,
+                Localizations = labels.Features[feature.Id].Names,
+                Aliases = labels.Features[feature.Id].Codes
+            }).ToList()
+        }));
+    }
+
+    private static void ValidateLabels(string[] ids, Dictionary<string, LocalizedEntry> entries)
+    {
+        if (ids.Distinct(StringComparer.Ordinal).Count() != ids.Length
+            || !ids.ToHashSet(StringComparer.Ordinal).SetEquals(entries.Keys)
+            || entries.Values.Any(entry => new[] { "sk", "en" }.Any(language =>
+                !entry.Names.TryGetValue(language, out var name) || string.IsNullOrWhiteSpace(name.Name))))
+            throw new InvalidDataException("Geometry and localized sk/en catalog IDs must match exactly.");
     }
 
     public GameRegion GetRegion(string? id)
@@ -103,6 +138,7 @@ public sealed class GameCatalog
         return region.Features
             .SelectMany(feature => new[] { feature.Name, feature.EnglishName }
                 .Concat(feature.Aliases)
+                .Concat(feature.Localizations.Values.SelectMany(name => name.Aliases.Prepend(name.Name)))
                 .Select(alias => (Key: NormalizeGuess(alias), Feature: feature)))
             .Where(entry => entry.Key.Length > 0)
             .GroupBy(entry => entry.Key, StringComparer.Ordinal)
@@ -113,21 +149,70 @@ public sealed class GameCatalog
 
 public sealed class MapCatalogDocument
 {
-    public List<GameRegion> Regions { get; init; } = [];
+    public List<RegionGeometry> Regions { get; init; } = [];
 }
 
-public sealed class GameRegion
+public sealed class RegionGeometry
 {
     public string Id { get; init; } = "";
+    public List<FeatureGeometry> Features { get; init; } = [];
+}
+
+public sealed class FeatureGeometry
+{
+    public string Id { get; init; } = "";
+    public MapGeometry Geometry { get; init; } = new();
+}
+
+public sealed class LocalizedCatalogDocument
+{
+    public Dictionary<string, LocalizedEntry> Regions { get; init; } = [];
+    public Dictionary<string, LocalizedEntry> Features { get; init; } = [];
+}
+
+public sealed class LocalizedEntry
+{
+    public Dictionary<string, LocalizedName> Names { get; init; } = [];
+    public string[] Codes { get; init; } = [];
+}
+
+public sealed class LocalizedName
+{
     public string Name { get; init; } = "";
+    public string[] Aliases { get; init; } = [];
+}
+
+public class LocalizedMapItem
+{
+    private readonly string _name = "";
+    public Dictionary<string, LocalizedName> Localizations { get; init; } = [];
+    public string Name
+    {
+        get => GetName("sk");
+        init => _name = value;
+    }
+
+    public string GetName(string language) =>
+        Localizations.GetValueOrDefault(language)?.Name
+        ?? Localizations.GetValueOrDefault("sk")?.Name
+        ?? _name;
+}
+
+public sealed class GameRegion : LocalizedMapItem
+{
+    public string Id { get; init; } = "";
     public List<MapFeature> Features { get; init; } = [];
 }
 
-public sealed class MapFeature
+public sealed class MapFeature : LocalizedMapItem
 {
+    private readonly string _englishName = "";
     public string Id { get; init; } = "";
-    public string Name { get; init; } = "";
-    public string EnglishName { get; init; } = "";
+    public string EnglishName
+    {
+        get => Localizations.GetValueOrDefault("en")?.Name ?? _englishName;
+        init => _englishName = value;
+    }
     public string[] Aliases { get; init; } = [];
     public MapGeometry Geometry { get; init; } = new();
 }

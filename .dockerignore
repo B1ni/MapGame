@@ -1,0 +1,8 @@
+**
+!MapGame/
+!MapGame/**
+MapGame/bin/
+MapGame/obj/
+MapGame/Logs/
+!Dockerfile
+.git/

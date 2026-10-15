@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Data\maps.json" LogicalName="MapGame.Data.maps.json" />
+    <EmbeddedResource Include="Data\country-names.json" LogicalName="MapGame.Data.country-names.json" />
   </ItemGroup>
 
 </Project>

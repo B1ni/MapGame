@@ -21,6 +21,13 @@ public sealed class LanRoomManager(
     private readonly SemaphoreSlim _connections = new(128, 128);
     public const int MaximumRooms = 32;
     public const int MaximumPlayers = 16;
+    private static readonly string[] PlayerColors =
+    [
+        "#2563eb", "#dc2626", "#16a34a", "#9333ea",
+        "#ea580c", "#0891b2", "#db2777", "#854d0e",
+        "#4f46e5", "#0f766e", "#be123c", "#65a30d",
+        "#a21caf", "#b45309", "#475569", "#7c3aed"
+    ];
 
     public async Task CleanupAsync(CancellationToken cancellationToken = default)
     {
@@ -54,7 +61,7 @@ public sealed class LanRoomManager(
                     new { type = "room-closed", message = "Platnosť čakárne alebo výsledkov vypršala." }, cancellationToken)));
                 await Task.WhenAll(peers.Select(peer => peer.CloseOutputAsync()));
             }
-            else if (results is not null) await SendFinishedAsync(peers, results, cancellationToken);
+            else if (results is not null) await SendFinishedAsync(room, peers, results, cancellationToken);
         }
     }
 
@@ -125,7 +132,7 @@ public sealed class LanRoomManager(
                 await JoinRoomAsync(peer, message.RoomCode, message.Name, cancellationToken);
                 break;
             case "start":
-                await StartGameAsync(peer, message.RegionId, message.TimeLimitSeconds, cancellationToken);
+                await StartGameAsync(peer, message.RegionId, message.TimeLimitSeconds, message.GameMode, cancellationToken);
                 break;
             case "guess":
                 await SubmitGuessAsync(peer, message.Guess, cancellationToken);
@@ -244,11 +251,19 @@ public sealed class LanRoomManager(
         LanPeer peer,
         string? regionId,
         int? timeLimitSeconds,
+        string? gameMode,
         CancellationToken cancellationToken)
     {
         if (!TryGetRoom(peer, out var room))
         {
             await SendErrorAsync(peer, "Najprv sa pripoj k hre.", cancellationToken);
+            return;
+        }
+
+        gameMode ??= "classic";
+        if (gameMode is not ("classic" or "battle-normal" or "battle-hardcore"))
+        {
+            await SendErrorAsync(peer, "Zvolený herný režim neexistuje.", cancellationToken);
             return;
         }
 
@@ -293,6 +308,7 @@ public sealed class LanRoomManager(
             {
                 region = selectedRegion;
                 room.Region = region;
+                room.GameMode = gameMode;
                 room.StartedAt = timeProvider.GetUtcNow();
                 room.EndsAt = room.StartedAt.Value.AddSeconds(timeLimitSeconds.GetValueOrDefault());
                 room.Status = "playing";
@@ -314,6 +330,8 @@ public sealed class LanRoomManager(
             return;
         }
 
+        IReadOnlyList<LeaderboardEntry> leaderboard;
+        lock (room.SyncRoot) leaderboard = BuildLeaderboard(room);
         await Task.WhenAll(peers.Select(target => SendAsync(
             target,
             new
@@ -321,6 +339,10 @@ public sealed class LanRoomManager(
                 type = "game-started",
                 regionId = region.Id,
                 regionName = region.Name,
+                gameMode,
+                ownership = Array.Empty<OwnedCountry>(),
+                revision = room.Revision,
+                leaderboard,
                 endsAt,
                 remainingSeconds = timeLimitSeconds
             },
@@ -338,6 +360,7 @@ public sealed class LanRoomManager(
         }
 
         object? response = null;
+        var ownershipChanged = false;
         IReadOnlyList<LanPeer> peersToFinish = [];
         IReadOnlyList<LeaderboardEntry>? results = null;
         lock (room.SyncRoot)
@@ -348,7 +371,7 @@ public sealed class LanRoomManager(
                 results = FinishRoom(room);
                 peersToFinish = ConnectedPeers(room);
             }
-            else if (room.Status != "playing" || room.Region is null || player is null)
+            else if (room.Status != "playing" || room.Region is null || player is null || !player.IsActive)
             {
                 response = new { type = "error", message = "Hra práve nebeží." };
             }
@@ -363,31 +386,53 @@ public sealed class LanRoomManager(
                 {
                     response = new { type = "guess-result", outcome = "incorrect", message = "Tento štát v zvolenom regióne nie je." };
                 }
+                else if (room.IsBattle && room.Owners.TryGetValue(feature.Id, out var ownerId)
+                    && ownerId != player.Id && room.GameMode == "battle-normal")
+                {
+                    response = new { type = "guess-result", outcome = "already-claimed", message = "Tento štát už obsadil iný hráč." };
+                }
                 else if (!player.FoundIds.Add(feature.Id))
                 {
                     response = new { type = "guess-result", outcome = "already-found", message = "Tento štát už máš uhádnutý." };
                 }
                 else
                 {
+                    if (room.IsBattle)
+                    {
+                        if (room.Owners.TryGetValue(feature.Id, out var previousOwner))
+                            room.Players[previousOwner].FoundIds.Remove(feature.Id);
+                        room.Owners[feature.Id] = player.Id;
+                        room.Revision++;
+                        ownershipChanged = true;
+                    }
                     player.SecondsAtBestScore = (int)Math.Floor((timeProvider.GetUtcNow() - room.StartedAt!.Value).TotalSeconds);
                     response = new
                     {
                         type = "guess-result",
                         outcome = "correct",
                         message = $"Správne: {feature.Name}.",
-                        foundIds = player.FoundIds.ToArray()
+                        foundIds = player.FoundIds.ToArray(),
+                        leaderboard = BuildLeaderboard(room),
+                        ownership = BuildOwnership(room),
+                        revision = room.Revision
                     };
+                    if (room.IsBattle && room.Owners.Count == room.Region.Features.Count)
+                    {
+                        results = FinishRoom(room);
+                        peersToFinish = ConnectedPeers(room);
+                    }
                 }
             }
         }
 
         if (results is not null)
         {
-            await SendFinishedAsync(peersToFinish, results, cancellationToken);
+            await SendFinishedAsync(room, peersToFinish, results, cancellationToken);
         }
         else if (response is not null)
         {
             await SendAsync(peer, response, cancellationToken);
+            if (ownershipChanged) await SendBattleUpdateAsync(room, peer, cancellationToken);
         }
     }
 
@@ -412,12 +457,7 @@ public sealed class LanRoomManager(
             }
             else if (room.Status == "playing" && player is not null)
             {
-                response = new
-                {
-                    type = "tick",
-                    remainingSeconds = Math.Max(0, (int)Math.Ceiling((room.EndsAt!.Value - timeProvider.GetUtcNow()).TotalSeconds)),
-                    foundIds = player.FoundIds.ToArray()
-                };
+                response = BuildTick(room, player);
             }
             else if (room.Status == "finished" && room.Results is not null)
             {
@@ -428,7 +468,7 @@ public sealed class LanRoomManager(
 
         if (results is not null)
         {
-            await SendFinishedAsync(peersToFinish, results, cancellationToken);
+            await SendFinishedAsync(room, peersToFinish, results, cancellationToken);
         }
         else if (response is not null)
         {
@@ -472,10 +512,7 @@ public sealed class LanRoomManager(
             return;
         }
 
-        await Task.WhenAll(peers.Select(target => SendAsync(
-            target,
-            new { type = "finished", reason = "host-ended", results },
-            cancellationToken)));
+        await SendFinishedAsync(room, peers, results, cancellationToken, "host-ended");
     }
 
     private void LeaveRoom(LanPeer peer)
@@ -583,14 +620,45 @@ public sealed class LanRoomManager(
     }
 
     private async Task SendFinishedAsync(
+        LanRoom room,
         IReadOnlyList<LanPeer> peers,
         IReadOnlyList<LeaderboardEntry> results,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string? reason = null)
     {
+        OwnedCountry[] ownership;
+        lock (room.SyncRoot) ownership = BuildOwnership(room);
         await Task.WhenAll(peers.Select(target => SendAsync(
             target,
-            new { type = "finished", results },
+            new { type = "finished", results, reason, gameMode = room.GameMode, ownership, revision = room.Revision },
             cancellationToken)));
+    }
+
+    private object BuildTick(LanRoom room, LanPlayer player) => new
+    {
+        type = "tick",
+        remainingSeconds = Math.Max(0, (int)Math.Ceiling((room.EndsAt!.Value - timeProvider.GetUtcNow()).TotalSeconds)),
+        foundIds = player.FoundIds.ToArray(),
+        leaderboard = BuildLeaderboard(room),
+        ownership = BuildOwnership(room),
+        revision = room.Revision
+    };
+
+    private static OwnedCountry[] BuildOwnership(LanRoom room) => room.Owners
+        .Select(entry => new OwnedCountry(entry.Key, room.Players[entry.Value].Color))
+        .ToArray();
+
+    private async Task SendBattleUpdateAsync(LanRoom room, LanPeer sender, CancellationToken cancellationToken)
+    {
+        (LanPeer Peer, object Message)[] updates;
+        lock (room.SyncRoot)
+        {
+            if (room.Status != "playing") return;
+            updates = room.Players.Values
+                .Where(player => player.Peer is not null && player.Peer != sender)
+                .Select(player => (player.Peer!, BuildTick(room, player))).ToArray();
+        }
+        await Task.WhenAll(updates.Select(update => SendAsync(update.Peer, update.Message, cancellationToken)));
     }
 
     private IReadOnlyList<LeaderboardEntry> FinishRoom(LanRoom room)
@@ -602,25 +670,34 @@ public sealed class LanRoomManager(
 
         room.Status = "finished";
         room.FinishedAt = timeProvider.GetUtcNow();
+        room.Results = BuildLeaderboard(room);
+        return room.Results;
+    }
+
+    private static IReadOnlyList<LeaderboardEntry> BuildLeaderboard(LanRoom room)
+    {
         var totalCount = room.Region!.Features.Count;
-        room.Results = room.Players.Values
-            .Where(player => player.IsActive)
+        var players = room.Players.Values
+            .Where(player => room.IsBattle || player.IsActive)
             .OrderByDescending(player => player.FoundIds.Count)
-            .ThenBy(player => player.FoundIds.Count == 0 ? int.MaxValue : player.SecondsAtBestScore)
+            .ThenBy(player => room.IsBattle || player.FoundIds.Count == 0 ? int.MaxValue : player.SecondsAtBestScore)
             .ThenBy(player => player.Name, StringComparer.CurrentCulture)
+            .ToArray();
+        return players
             .Select((player, index) => new LeaderboardEntry(
-                index + 1,
+                room.IsBattle ? Array.FindIndex(players, other => other.FoundIds.Count == player.FoundIds.Count) + 1 : index + 1,
                 player.Name,
                 player.FoundIds.Count,
                 totalCount,
-                player.FoundIds.Count == 0 ? null : player.SecondsAtBestScore))
+                room.IsBattle || player.FoundIds.Count == 0 ? null : player.SecondsAtBestScore,
+                room.IsBattle ? player.Color : null))
             .ToArray();
-        return room.Results;
     }
 
     private static void AddPlayer(LanRoom room, LanPeer peer, string name, bool isHost)
     {
-        var player = new LanPlayer(Guid.NewGuid().ToString("N"), name, isHost, peer);
+        var color = PlayerColors.First(color => room.Players.Values.All(player => player.Color != color));
+        var player = new LanPlayer(Guid.NewGuid().ToString("N"), name, isHost, peer, color);
         room.Players.Add(player.Id, player);
         peer.RoomCode = room.Code;
         peer.PlayerId = player.Id;
@@ -744,12 +821,17 @@ public sealed class LanRoomManager(
         public DateTimeOffset? StartedAt { get; set; }
         public DateTimeOffset? EndsAt { get; set; }
         public IReadOnlyList<LeaderboardEntry>? Results { get; set; }
+        public string GameMode { get; set; } = "classic";
+        public bool IsBattle => GameMode != "classic";
+        public Dictionary<string, string> Owners { get; } = new(StringComparer.Ordinal);
+        public long Revision { get; set; }
     }
 
-    private sealed class LanPlayer(string id, string name, bool isHost, LanPeer peer)
+    private sealed class LanPlayer(string id, string name, bool isHost, LanPeer peer, string color)
     {
         public string Id { get; } = id;
         public string Name { get; } = name;
+        public string Color { get; } = color;
         public bool IsHost { get; } = isHost;
         public LanPeer? Peer { get; set; } = peer;
         public HashSet<string> FoundIds { get; } = new(StringComparer.Ordinal);
@@ -817,12 +899,16 @@ public sealed class LanRoomManager(
         public string? RegionId { get; init; }
         public string? Guess { get; init; }
         public int? TimeLimitSeconds { get; init; }
+        public string? GameMode { get; init; }
     }
+
+    private sealed record OwnedCountry(string Id, string Color);
 
     private sealed record LeaderboardEntry(
         int Place,
         string Name,
         int GuessedCount,
         int TotalCount,
-        int? Seconds);
+        int? Seconds,
+        string? Color);
 }

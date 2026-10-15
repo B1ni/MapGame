@@ -10,9 +10,11 @@ function client() {
     if (!elements.has(id)) elements.set(id, {
       value: "", textContent: "", hidden: id !== "homePanel", disabled: false,
       children: [], listeners: {}, classList: { toggle() {} },
+      style: { removeProperty(name) { delete this[name]; } },
       addEventListener(type, handler) { this.listeners[type] = handler; },
       replaceChildren() { this.children = []; },
-      append(child) { this.children.push(child); },
+      append(...children) { this.children.push(...children); },
+      prepend(child) { this.children.unshift(child); },
       focus() {}, setAttribute() {}, querySelectorAll() { return []; }
     });
     return elements.get(id);
@@ -51,6 +53,77 @@ test("connectMultiplayer requires a player's own name", () => {
   c.run('connectMultiplayer("create")');
   assert.equal(c.Socket.sockets.length, 0);
   assert.match(c.element("multiplayerError").textContent, /meno/);
+});
+
+test("live leaderboard renders from start through ticks and guesses, then stays hidden in singleplayer", () => {
+  const c = client();
+  c.run('regions.set("europe", { name: "Europa" }); renderMap = () => {}; state.multiplayer = true;');
+  const zero = [{ place: 1, name: "<Host>", guessedCount: 0, totalCount: 48, seconds: null }];
+  c.run(`handleMultiplayerMessage(${JSON.stringify({
+    type: "game-started", regionId: "europe", remainingSeconds: 60, leaderboard: zero
+  })})`);
+  assert.equal(c.element("liveLeaderboardWrap").hidden, false);
+  assert.equal(c.element("liveLeaderboard").children[0].children[0].textContent, "1. <Host>");
+  assert.equal(c.element("liveLeaderboard").children[0].children[1].textContent, "0 / 48");
+  const leader = [{ place: 1, name: "Jana", guessedCount: 2, totalCount: 48, seconds: 5 }, ...zero];
+  c.run(`handleMultiplayerMessage(${JSON.stringify({
+    type: "tick", remainingSeconds: 55, foundIds: [], leaderboard: leader
+  })})`);
+  assert.equal(c.element("liveLeaderboard").children.length, 2);
+  assert.equal(c.element("liveLeaderboard").children[0].children[1].textContent, "2 / 48 · 00:05");
+  c.run(`handleMultiplayerMessage(${JSON.stringify({
+    type: "guess-result", outcome: "correct", message: "OK", foundIds: ["SVK"], leaderboard: zero
+  })})`);
+  assert.equal(c.element("liveLeaderboard").children.length, 1);
+  c.run(`handleMultiplayerMessage(${JSON.stringify({ type: "finished", results: leader })})`);
+  assert.equal(c.element("endPanel").hidden, false);
+  assert.equal(c.element("leaderboard").children.length, 2);
+  c.run('state.multiplayer = false; renderGame("europe", "time");');
+  assert.equal(c.element("liveLeaderboardWrap").hidden, true);
+  assert.equal(c.element("liveLeaderboard").children.length, 0);
+});
+
+test("Map Battle selects variants and renders shared ownership, steals, tied results and stale updates safely", () => {
+  const c = client();
+  c.element("hostGameMode").value = "battle";
+  c.element("hostBattleVariant").value = "hardcore";
+  c.element("hostGameMode").listeners.change();
+  assert.equal(c.element("battleOptions").hidden, false);
+  c.run('state.socket = new WebSocket("ws://localhost/ws"); state.socket.readyState = WebSocket.OPEN; startMultiplayerGame();');
+  assert.equal(c.Socket.sockets[0].sent.gameMode, "battle-hardcore");
+  const shape = c.element("shape");
+  shape.dataset = { id: "SVK" };
+  c.element("map").querySelectorAll = () => [shape];
+  c.run('regions.set("europe", {name:"Europa"}); renderMap = () => {}; state.multiplayer = true; state.playerName = "Host";');
+  const results = [
+    { place: 1, name: "Host", guessedCount: 1, totalCount: 48, seconds: null, color: "#2563eb" },
+    { place: 1, name: "Guest", guessedCount: 1, totalCount: 48, seconds: null, color: "#dc2626" }
+  ];
+  const message = payload => c.run(`handleMultiplayerMessage(${JSON.stringify(payload)})`);
+  message({ type: "game-started", gameMode: "battle-hardcore", regionId: "europe",
+    remainingSeconds: 60, revision: 0, ownership: [], leaderboard: results });
+  assert.match(c.element("gameModeLabel").textContent, /MAP BATTLE.*HARDCORE/);
+  assert.equal(c.element("liveLeaderboard").children[0].children[0].children[0].style.backgroundColor, "#2563eb");
+  message({ type: "tick", remainingSeconds: 58, revision: 1,
+    ownership: [{ id: "SVK", color: "#2563eb" }], foundIds: [], leaderboard: results });
+  assert.equal(shape.style.fill, "#2563eb");
+  message({ type: "tick", remainingSeconds: 57, revision: 2,
+    ownership: [{ id: "SVK", color: "#dc2626" }], foundIds: [], leaderboard: results });
+  assert.equal(shape.style.fill, "#dc2626");
+  message({ type: "tick", remainingSeconds: 58, revision: 1,
+    ownership: [{ id: "SVK", color: "#2563eb" }], foundIds: [], leaderboard: [] });
+  assert.equal(shape.style.fill, "#dc2626");
+  assert.equal(c.element("liveLeaderboard").children.length, 2);
+  message({ type: "finished", revision: 2, ownership: [{ id: "SVK", color: "#dc2626" }], results });
+  assert.equal(c.element("endTitle").textContent, "Remíza!");
+  assert.equal(c.element("endPanel").hidden, false);
+  message({ type: "tick", remainingSeconds: 50, revision: 3, ownership: [], leaderboard: [] });
+  assert.equal(shape.style.fill, "#dc2626");
+  c.run("returnHome()");
+  assert.equal(c.run("state.gameMode"), "classic");
+  c.element("hostGameMode").value = "classic";
+  c.element("hostGameMode").listeners.change();
+  assert.equal(c.element("battleOptions").hidden, true);
 });
 
 test("connectMultiplayer normalizes IP and only opens a confirmed lobby", () => {

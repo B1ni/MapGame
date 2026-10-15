@@ -1,0 +1,36 @@
+MapGame geometry provenance
+===========================
+Existing country and US-state outlines: Natural Earth (public domain).
+The existing 228 non-UK feature geometries were retained without changes.
+
+Four UK constituent countries (replacing the single GBR answer):
+  Dataset: Natural Earth 1:50m Cultural Vectors, Admin 0 - Map Subunits
+  Release: v5.1.2
+  File: ne_50m_admin_0_map_subunits.geojson
+  Source:
+  https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/geojson/ne_50m_admin_0_map_subunits.geojson
+  Raw download:
+  https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_50m_admin_0_map_subunits.geojson
+  Downloaded: 2026-10-15
+  SHA-256 of original download:
+  b1df8433477614c89e6b724990a7ab3733ec647559863321b6255c3fa3fce3ec
+
+Exact source geometry was extracted, without simplification, clipping or
+coordinate changes, using the source SU_A3 property:
+  ENG -> GB-ENG (England)
+  SCT -> GB-SCT (Scotland)
+  WLS -> GB-WLS (Wales)
+  NIR -> GB-NIR (Northern Ireland)
+
+Ireland's existing IRL geometry is identical to IRL in this same source.
+Consequently the Northern Ireland / Ireland border uses matching coordinates.
+These are generalized cartographic outlines at 1:50m, not survey boundaries.
+Scotland includes the islands present in the source dataset.
+GBR no longer exists as an answer or a drawable feature.
+
+License: public domain. See NATURAL-EARTH-LICENSE.txt and:
+https://www.naturalearthdata.com/about/terms-of-use/
+
+Reproduction (Python standard library only, from repository root):
+  python tools\refresh-map-shapes.py --import-uk
+Without --import-uk, the script only regenerates the public geometry file.

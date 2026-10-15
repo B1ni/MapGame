@@ -84,6 +84,8 @@ public sealed class HostingTests
             Assert.True(page.Headers.Contains("Strict-Transport-Security"));
             Assert.Contains("lanJoinOptions", await page.Content.ReadAsStringAsync());
             Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/data/map-shapes.json")).StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/data/country-names.json")).StatusCode);
+            Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/Data/country-names.json")).StatusCode);
             using var hostile = new HttpRequestMessage(HttpMethod.Post, "/api/games")
             {
                 Content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json")

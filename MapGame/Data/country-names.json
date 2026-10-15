@@ -1,0 +1,4458 @@
+{
+  "regions": {
+    "europe": {
+      "names": {
+        "sk": {
+          "name": "Európa"
+        },
+        "en": {
+          "name": "Europe"
+        }
+      }
+    },
+    "asia": {
+      "names": {
+        "sk": {
+          "name": "Ázia"
+        },
+        "en": {
+          "name": "Asia"
+        }
+      }
+    },
+    "north-america": {
+      "names": {
+        "sk": {
+          "name": "Severná Amerika"
+        },
+        "en": {
+          "name": "North America"
+        }
+      }
+    },
+    "south-america": {
+      "names": {
+        "sk": {
+          "name": "Južná Amerika"
+        },
+        "en": {
+          "name": "South America"
+        }
+      }
+    },
+    "africa": {
+      "names": {
+        "sk": {
+          "name": "Afrika"
+        },
+        "en": {
+          "name": "Africa"
+        }
+      }
+    },
+    "usa": {
+      "names": {
+        "sk": {
+          "name": "Spojené štáty americké"
+        },
+        "en": {
+          "name": "United States of America"
+        }
+      }
+    }
+  },
+  "features": {
+    "ALB": {
+      "names": {
+        "sk": {
+          "name": "Albánsko",
+          "aliases": [
+            "Albánska republika"
+          ]
+        },
+        "en": {
+          "name": "Albania",
+          "aliases": [
+            "Republic of Albania"
+          ]
+        }
+      },
+      "codes": [
+        "AL",
+        "ALB"
+      ]
+    },
+    "AND": {
+      "names": {
+        "sk": {
+          "name": "Andorra",
+          "aliases": [
+            "Andorrské kniežatstvo"
+          ]
+        },
+        "en": {
+          "name": "Andorra",
+          "aliases": [
+            "Principality of Andorra"
+          ]
+        }
+      },
+      "codes": [
+        "AD",
+        "AND"
+      ]
+    },
+    "AUT": {
+      "names": {
+        "sk": {
+          "name": "Rakúsko",
+          "aliases": [
+            "Rakúska republika"
+          ]
+        },
+        "en": {
+          "name": "Austria",
+          "aliases": [
+            "Republic of Austria"
+          ]
+        }
+      },
+      "codes": [
+        "AT",
+        "AUT"
+      ]
+    },
+    "BEL": {
+      "names": {
+        "sk": {
+          "name": "Belgicko",
+          "aliases": [
+            "Belgické kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Belgium",
+          "aliases": [
+            "Kingdom of Belgium"
+          ]
+        }
+      },
+      "codes": [
+        "BE",
+        "BEL"
+      ]
+    },
+    "BGR": {
+      "names": {
+        "sk": {
+          "name": "Bulharsko",
+          "aliases": [
+            "Bulharská republika"
+          ]
+        },
+        "en": {
+          "name": "Bulgaria",
+          "aliases": [
+            "Republic of Bulgaria"
+          ]
+        }
+      },
+      "codes": [
+        "BG",
+        "BGR"
+      ]
+    },
+    "BIH": {
+      "names": {
+        "sk": {
+          "name": "Bosna a Hercegovina",
+          "aliases": [
+            "Republika Bosny a Hercegoviny",
+            "BiH"
+          ]
+        },
+        "en": {
+          "name": "Bosnia and Herzegovina",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "BA",
+        "BIH"
+      ]
+    },
+    "BLR": {
+      "names": {
+        "sk": {
+          "name": "Bielorusko",
+          "aliases": [
+            "Bieloruská republika"
+          ]
+        },
+        "en": {
+          "name": "Belarus",
+          "aliases": [
+            "Republic of Belarus"
+          ]
+        }
+      },
+      "codes": [
+        "BY",
+        "BLR"
+      ]
+    },
+    "CHE": {
+      "names": {
+        "sk": {
+          "name": "Švajčiarsko",
+          "aliases": [
+            "Švajčiarska konfederácia"
+          ]
+        },
+        "en": {
+          "name": "Switzerland",
+          "aliases": [
+            "Swiss Confederation"
+          ]
+        }
+      },
+      "codes": [
+        "CH",
+        "CHE"
+      ]
+    },
+    "CYP": {
+      "names": {
+        "sk": {
+          "name": "Cyprus",
+          "aliases": [
+            "Cyperská republika"
+          ]
+        },
+        "en": {
+          "name": "Cyprus",
+          "aliases": [
+            "Republic of Cyprus"
+          ]
+        }
+      },
+      "codes": [
+        "CY",
+        "CYP"
+      ]
+    },
+    "CZE": {
+      "names": {
+        "sk": {
+          "name": "Česko",
+          "aliases": [
+            "Česká republika",
+            "ČR"
+          ]
+        },
+        "en": {
+          "name": "Czechia",
+          "aliases": [
+            "Czech Republic",
+            "Czech Republic"
+          ]
+        }
+      },
+      "codes": [
+        "CZ",
+        "CZE"
+      ]
+    },
+    "DEU": {
+      "names": {
+        "sk": {
+          "name": "Nemecko",
+          "aliases": [
+            "Nemecká spolková republika"
+          ]
+        },
+        "en": {
+          "name": "Germany",
+          "aliases": [
+            "Federal Republic of Germany",
+            "Deutschland"
+          ]
+        }
+      },
+      "codes": [
+        "DE",
+        "DEU"
+      ]
+    },
+    "DNK": {
+      "names": {
+        "sk": {
+          "name": "Dánsko",
+          "aliases": [
+            "Dánske kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Denmark",
+          "aliases": [
+            "Kingdom of Denmark"
+          ]
+        }
+      },
+      "codes": [
+        "DK",
+        "DNK"
+      ]
+    },
+    "ESP": {
+      "names": {
+        "sk": {
+          "name": "Španielsko",
+          "aliases": [
+            "Španielske kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Spain",
+          "aliases": [
+            "Kingdom of Spain"
+          ]
+        }
+      },
+      "codes": [
+        "ES",
+        "ESP"
+      ]
+    },
+    "EST": {
+      "names": {
+        "sk": {
+          "name": "Estónsko",
+          "aliases": [
+            "Estónska republika"
+          ]
+        },
+        "en": {
+          "name": "Estonia",
+          "aliases": [
+            "Republic of Estonia"
+          ]
+        }
+      },
+      "codes": [
+        "EE",
+        "EST"
+      ]
+    },
+    "FIN": {
+      "names": {
+        "sk": {
+          "name": "Fínsko",
+          "aliases": [
+            "Fínska republika"
+          ]
+        },
+        "en": {
+          "name": "Finland",
+          "aliases": [
+            "Republic of Finland"
+          ]
+        }
+      },
+      "codes": [
+        "FI",
+        "FIN"
+      ]
+    },
+    "FRA": {
+      "names": {
+        "sk": {
+          "name": "Francúzsko",
+          "aliases": [
+            "Francúzska republika"
+          ]
+        },
+        "en": {
+          "name": "France",
+          "aliases": [
+            "French Republic"
+          ]
+        }
+      },
+      "codes": [
+        "FR",
+        "FRA"
+      ]
+    },
+    "GRC": {
+      "names": {
+        "sk": {
+          "name": "Grécko",
+          "aliases": [
+            "Grécka republika"
+          ]
+        },
+        "en": {
+          "name": "Greece",
+          "aliases": [
+            "Hellenic Republic"
+          ]
+        }
+      },
+      "codes": [
+        "GR",
+        "GRC"
+      ]
+    },
+    "HRV": {
+      "names": {
+        "sk": {
+          "name": "Chorvátsko",
+          "aliases": [
+            "Chorvátska republika"
+          ]
+        },
+        "en": {
+          "name": "Croatia",
+          "aliases": [
+            "Republic of Croatia"
+          ]
+        }
+      },
+      "codes": [
+        "HR",
+        "HRV"
+      ]
+    },
+    "HUN": {
+      "names": {
+        "sk": {
+          "name": "Maďarsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Hungary",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "HU",
+        "HUN"
+      ]
+    },
+    "IRL": {
+      "names": {
+        "sk": {
+          "name": "Írsko",
+          "aliases": [
+            "Írska republika"
+          ]
+        },
+        "en": {
+          "name": "Ireland",
+          "aliases": [
+            "Republic of Ireland"
+          ]
+        }
+      },
+      "codes": [
+        "IE",
+        "IRL"
+      ]
+    },
+    "ISL": {
+      "names": {
+        "sk": {
+          "name": "Island",
+          "aliases": [
+            "Islandská republika"
+          ]
+        },
+        "en": {
+          "name": "Iceland",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "IS",
+        "ISL"
+      ]
+    },
+    "ITA": {
+      "names": {
+        "sk": {
+          "name": "Taliansko",
+          "aliases": [
+            "Talianska republika"
+          ]
+        },
+        "en": {
+          "name": "Italy",
+          "aliases": [
+            "Italian Republic"
+          ]
+        }
+      },
+      "codes": [
+        "IT",
+        "ITA"
+      ]
+    },
+    "LIE": {
+      "names": {
+        "sk": {
+          "name": "Lichtenštajnsko",
+          "aliases": [
+            "Lichtenštajnské kniežatstvo"
+          ]
+        },
+        "en": {
+          "name": "Liechtenstein",
+          "aliases": [
+            "Principality of Liechtenstein"
+          ]
+        }
+      },
+      "codes": [
+        "LI",
+        "LIE"
+      ]
+    },
+    "LTU": {
+      "names": {
+        "sk": {
+          "name": "Litva",
+          "aliases": [
+            "Litovská republika"
+          ]
+        },
+        "en": {
+          "name": "Lithuania",
+          "aliases": [
+            "Republic of Lithuania"
+          ]
+        }
+      },
+      "codes": [
+        "LT",
+        "LTU"
+      ]
+    },
+    "LUX": {
+      "names": {
+        "sk": {
+          "name": "Luxembursko",
+          "aliases": [
+            "Luxemburské veľkovojvodstvo"
+          ]
+        },
+        "en": {
+          "name": "Luxembourg",
+          "aliases": [
+            "Grand Duchy of Luxembourg"
+          ]
+        }
+      },
+      "codes": [
+        "LU",
+        "LUX"
+      ]
+    },
+    "LVA": {
+      "names": {
+        "sk": {
+          "name": "Lotyšsko",
+          "aliases": [
+            "Lotyšská republika"
+          ]
+        },
+        "en": {
+          "name": "Latvia",
+          "aliases": [
+            "Republic of Latvia"
+          ]
+        }
+      },
+      "codes": [
+        "LV",
+        "LVA"
+      ]
+    },
+    "MCO": {
+      "names": {
+        "sk": {
+          "name": "Monako",
+          "aliases": [
+            "Monacké kniežatstvo"
+          ]
+        },
+        "en": {
+          "name": "Monaco",
+          "aliases": [
+            "Principality of Monaco"
+          ]
+        }
+      },
+      "codes": [
+        "MC",
+        "MCO"
+      ]
+    },
+    "MDA": {
+      "names": {
+        "sk": {
+          "name": "Moldavsko",
+          "aliases": [
+            "Moldavská republika"
+          ]
+        },
+        "en": {
+          "name": "Moldova",
+          "aliases": [
+            "Republic of Moldova"
+          ]
+        }
+      },
+      "codes": [
+        "MD",
+        "MDA"
+      ]
+    },
+    "MKD": {
+      "names": {
+        "sk": {
+          "name": "Severné Macedónsko",
+          "aliases": [
+            "Severomacedónska republika",
+            "Macedónsko"
+          ]
+        },
+        "en": {
+          "name": "North Macedonia",
+          "aliases": [
+            "Republic of North Macedonia",
+            "Macedonia"
+          ]
+        }
+      },
+      "codes": [
+        "MK",
+        "MKD"
+      ]
+    },
+    "MLT": {
+      "names": {
+        "sk": {
+          "name": "Malta",
+          "aliases": [
+            "Maltská republika"
+          ]
+        },
+        "en": {
+          "name": "Malta",
+          "aliases": [
+            "Republic of Malta"
+          ]
+        }
+      },
+      "codes": [
+        "MT",
+        "MLT"
+      ]
+    },
+    "MNE": {
+      "names": {
+        "sk": {
+          "name": "Čierna Hora",
+          "aliases": []
+        },
+        "en": {
+          "name": "Montenegro",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "ME",
+        "MNE"
+      ]
+    },
+    "NLD": {
+      "names": {
+        "sk": {
+          "name": "Holandsko",
+          "aliases": [
+            "Holandské kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Netherlands",
+          "aliases": [
+            "Kingdom of the Netherlands",
+            "Holland"
+          ]
+        }
+      },
+      "codes": [
+        "NL",
+        "NLD"
+      ]
+    },
+    "NOR": {
+      "names": {
+        "sk": {
+          "name": "Nórsko",
+          "aliases": [
+            "Nórske kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Norway",
+          "aliases": [
+            "Kingdom of Norway"
+          ]
+        }
+      },
+      "codes": [
+        "NO",
+        "NOR"
+      ]
+    },
+    "POL": {
+      "names": {
+        "sk": {
+          "name": "Poľsko",
+          "aliases": [
+            "Poľská republika"
+          ]
+        },
+        "en": {
+          "name": "Poland",
+          "aliases": [
+            "Republic of Poland"
+          ]
+        }
+      },
+      "codes": [
+        "PL",
+        "POL"
+      ]
+    },
+    "PRT": {
+      "names": {
+        "sk": {
+          "name": "Portugalsko",
+          "aliases": [
+            "Portugalská republika"
+          ]
+        },
+        "en": {
+          "name": "Portugal",
+          "aliases": [
+            "Portuguese Republic"
+          ]
+        }
+      },
+      "codes": [
+        "PT",
+        "PRT"
+      ]
+    },
+    "ROU": {
+      "names": {
+        "sk": {
+          "name": "Rumunsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Romania",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "RO",
+        "ROU"
+      ]
+    },
+    "RUS": {
+      "names": {
+        "sk": {
+          "name": "Rusko",
+          "aliases": [
+            "Ruská federácia"
+          ]
+        },
+        "en": {
+          "name": "Russia",
+          "aliases": [
+            "Russian Federation"
+          ]
+        }
+      },
+      "codes": [
+        "RU",
+        "RUS"
+      ]
+    },
+    "SMR": {
+      "names": {
+        "sk": {
+          "name": "San Maríno",
+          "aliases": [
+            "Sanmarínska republika"
+          ]
+        },
+        "en": {
+          "name": "San Marino",
+          "aliases": [
+            "Most Serene Republic of San Marino"
+          ]
+        }
+      },
+      "codes": [
+        "SM",
+        "SMR"
+      ]
+    },
+    "SRB": {
+      "names": {
+        "sk": {
+          "name": "Srbsko",
+          "aliases": [
+            "Srbská republika"
+          ]
+        },
+        "en": {
+          "name": "Serbia",
+          "aliases": [
+            "Republic of Serbia"
+          ]
+        }
+      },
+      "codes": [
+        "RS",
+        "SRB"
+      ]
+    },
+    "SVK": {
+      "names": {
+        "sk": {
+          "name": "Slovensko",
+          "aliases": [
+            "Slovenská republika",
+            "SR"
+          ]
+        },
+        "en": {
+          "name": "Slovakia",
+          "aliases": [
+            "Slovak Republic"
+          ]
+        }
+      },
+      "codes": [
+        "SK",
+        "SVK"
+      ]
+    },
+    "SVN": {
+      "names": {
+        "sk": {
+          "name": "Slovinsko",
+          "aliases": [
+            "Slovinská republika"
+          ]
+        },
+        "en": {
+          "name": "Slovenia",
+          "aliases": [
+            "Republic of Slovenia"
+          ]
+        }
+      },
+      "codes": [
+        "SI",
+        "SVN"
+      ]
+    },
+    "SWE": {
+      "names": {
+        "sk": {
+          "name": "Švédsko",
+          "aliases": [
+            "Švédske kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Sweden",
+          "aliases": [
+            "Kingdom of Sweden"
+          ]
+        }
+      },
+      "codes": [
+        "SE",
+        "SWE"
+      ]
+    },
+    "UKR": {
+      "names": {
+        "sk": {
+          "name": "Ukrajina",
+          "aliases": []
+        },
+        "en": {
+          "name": "Ukraine",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "UA",
+        "UKR"
+      ]
+    },
+    "VAT": {
+      "names": {
+        "sk": {
+          "name": "Vatikán",
+          "aliases": [
+            "Svätá stolica (Vatikánsky mestský štát)",
+            "Vatikánsky mestský štát"
+          ]
+        },
+        "en": {
+          "name": "Vatican City",
+          "aliases": [
+            "Vatican City State",
+            "Vatican",
+            "Holy See"
+          ]
+        }
+      },
+      "codes": [
+        "VA",
+        "VAT"
+      ]
+    },
+    "AFG": {
+      "names": {
+        "sk": {
+          "name": "Afganistan",
+          "aliases": [
+            "Afgánsky islamský štát"
+          ]
+        },
+        "en": {
+          "name": "Afghanistan",
+          "aliases": [
+            "Islamic Republic of Afghanistan"
+          ]
+        }
+      },
+      "codes": [
+        "AF",
+        "AFG"
+      ]
+    },
+    "ARE": {
+      "names": {
+        "sk": {
+          "name": "Spojené arabské emiráty",
+          "aliases": [
+            "SAE"
+          ]
+        },
+        "en": {
+          "name": "United Arab Emirates",
+          "aliases": [
+            "UAE"
+          ]
+        }
+      },
+      "codes": [
+        "AE",
+        "ARE"
+      ]
+    },
+    "ARM": {
+      "names": {
+        "sk": {
+          "name": "Arménsko",
+          "aliases": [
+            "Arménska republika"
+          ]
+        },
+        "en": {
+          "name": "Armenia",
+          "aliases": [
+            "Republic of Armenia"
+          ]
+        }
+      },
+      "codes": [
+        "AM",
+        "ARM"
+      ]
+    },
+    "AZE": {
+      "names": {
+        "sk": {
+          "name": "Azerbajdžan",
+          "aliases": [
+            "Azerbajdžanská republika"
+          ]
+        },
+        "en": {
+          "name": "Azerbaijan",
+          "aliases": [
+            "Republic of Azerbaijan"
+          ]
+        }
+      },
+      "codes": [
+        "AZ",
+        "AZE"
+      ]
+    },
+    "BGD": {
+      "names": {
+        "sk": {
+          "name": "Bangladéš",
+          "aliases": [
+            "Bangladéšska ľudová republika"
+          ]
+        },
+        "en": {
+          "name": "Bangladesh",
+          "aliases": [
+            "People's Republic of Bangladesh"
+          ]
+        }
+      },
+      "codes": [
+        "BD",
+        "BGD"
+      ]
+    },
+    "BHR": {
+      "names": {
+        "sk": {
+          "name": "Bahrajn",
+          "aliases": [
+            "Bahrajnské kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Bahrain",
+          "aliases": [
+            "Kingdom of Bahrain"
+          ]
+        }
+      },
+      "codes": [
+        "BH",
+        "BHR"
+      ]
+    },
+    "BRN": {
+      "names": {
+        "sk": {
+          "name": "Brunej",
+          "aliases": [
+            "Brunejský sultanát"
+          ]
+        },
+        "en": {
+          "name": "Brunei",
+          "aliases": [
+            "Nation of Brunei, Abode of Peace"
+          ]
+        }
+      },
+      "codes": [
+        "BN",
+        "BRN"
+      ]
+    },
+    "BTN": {
+      "names": {
+        "sk": {
+          "name": "Bhután",
+          "aliases": [
+            "Bhutánske kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Bhutan",
+          "aliases": [
+            "Kingdom of Bhutan"
+          ]
+        }
+      },
+      "codes": [
+        "BT",
+        "BTN"
+      ]
+    },
+    "CHN": {
+      "names": {
+        "sk": {
+          "name": "Čína",
+          "aliases": [
+            "Čínska ľudová republika",
+            "ČĽR"
+          ]
+        },
+        "en": {
+          "name": "China",
+          "aliases": [
+            "People's Republic of China",
+            "PRC"
+          ]
+        }
+      },
+      "codes": [
+        "CN",
+        "CHN"
+      ]
+    },
+    "GEO": {
+      "names": {
+        "sk": {
+          "name": "Gruzínsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Georgia",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "GE",
+        "GEO"
+      ]
+    },
+    "IDN": {
+      "names": {
+        "sk": {
+          "name": "Indonézia",
+          "aliases": [
+            "Indonézska republika"
+          ]
+        },
+        "en": {
+          "name": "Indonesia",
+          "aliases": [
+            "Republic of Indonesia"
+          ]
+        }
+      },
+      "codes": [
+        "ID",
+        "IDN"
+      ]
+    },
+    "IND": {
+      "names": {
+        "sk": {
+          "name": "India",
+          "aliases": [
+            "Indická republika"
+          ]
+        },
+        "en": {
+          "name": "India",
+          "aliases": [
+            "Republic of India"
+          ]
+        }
+      },
+      "codes": [
+        "IN",
+        "IND"
+      ]
+    },
+    "IRN": {
+      "names": {
+        "sk": {
+          "name": "Irán",
+          "aliases": [
+            "Iránska islamská republika"
+          ]
+        },
+        "en": {
+          "name": "Iran",
+          "aliases": [
+            "Islamic Republic of Iran"
+          ]
+        }
+      },
+      "codes": [
+        "IR",
+        "IRN"
+      ]
+    },
+    "IRQ": {
+      "names": {
+        "sk": {
+          "name": "Irak",
+          "aliases": [
+            "Iracká republika"
+          ]
+        },
+        "en": {
+          "name": "Iraq",
+          "aliases": [
+            "Republic of Iraq"
+          ]
+        }
+      },
+      "codes": [
+        "IQ",
+        "IRQ"
+      ]
+    },
+    "ISR": {
+      "names": {
+        "sk": {
+          "name": "Izrael",
+          "aliases": [
+            "Izraelský štát"
+          ]
+        },
+        "en": {
+          "name": "Israel",
+          "aliases": [
+            "State of Israel"
+          ]
+        }
+      },
+      "codes": [
+        "IL",
+        "ISR"
+      ]
+    },
+    "JOR": {
+      "names": {
+        "sk": {
+          "name": "Jordánsko",
+          "aliases": [
+            "Jordánske hášimovské kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Jordan",
+          "aliases": [
+            "Hashemite Kingdom of Jordan"
+          ]
+        }
+      },
+      "codes": [
+        "JO",
+        "JOR"
+      ]
+    },
+    "JPN": {
+      "names": {
+        "sk": {
+          "name": "Japonsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Japan",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "JP",
+        "JPN"
+      ]
+    },
+    "KAZ": {
+      "names": {
+        "sk": {
+          "name": "Kazachstan",
+          "aliases": [
+            "Kazašská republika"
+          ]
+        },
+        "en": {
+          "name": "Kazakhstan",
+          "aliases": [
+            "Republic of Kazakhstan"
+          ]
+        }
+      },
+      "codes": [
+        "KZ",
+        "KAZ"
+      ]
+    },
+    "KGZ": {
+      "names": {
+        "sk": {
+          "name": "Kirgizsko",
+          "aliases": [
+            "Kirgizská republika"
+          ]
+        },
+        "en": {
+          "name": "Kyrgyzstan",
+          "aliases": [
+            "Kyrgyz Republic"
+          ]
+        }
+      },
+      "codes": [
+        "KG",
+        "KGZ"
+      ]
+    },
+    "KHM": {
+      "names": {
+        "sk": {
+          "name": "Kambodža",
+          "aliases": [
+            "Kambodžské kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Cambodia",
+          "aliases": [
+            "Kingdom of Cambodia"
+          ]
+        }
+      },
+      "codes": [
+        "KH",
+        "KHM"
+      ]
+    },
+    "KOR": {
+      "names": {
+        "sk": {
+          "name": "Južná Kórea",
+          "aliases": [
+            "Kórejská republika"
+          ]
+        },
+        "en": {
+          "name": "South Korea",
+          "aliases": [
+            "Republic of Korea",
+            "ROK"
+          ]
+        }
+      },
+      "codes": [
+        "KR",
+        "KOR"
+      ]
+    },
+    "KWT": {
+      "names": {
+        "sk": {
+          "name": "Kuvajt",
+          "aliases": [
+            "Kuvajtský štát"
+          ]
+        },
+        "en": {
+          "name": "Kuwait",
+          "aliases": [
+            "State of Kuwait"
+          ]
+        }
+      },
+      "codes": [
+        "KW",
+        "KWT"
+      ]
+    },
+    "LAO": {
+      "names": {
+        "sk": {
+          "name": "Laos",
+          "aliases": [
+            "Laoská ľudovodemokratická republika"
+          ]
+        },
+        "en": {
+          "name": "Laos",
+          "aliases": [
+            "Lao People's Democratic Republic"
+          ]
+        }
+      },
+      "codes": [
+        "LA",
+        "LAO"
+      ]
+    },
+    "LBN": {
+      "names": {
+        "sk": {
+          "name": "Libanon",
+          "aliases": [
+            "Libanonská republika"
+          ]
+        },
+        "en": {
+          "name": "Lebanon",
+          "aliases": [
+            "Lebanese Republic"
+          ]
+        }
+      },
+      "codes": [
+        "LB",
+        "LBN"
+      ]
+    },
+    "LKA": {
+      "names": {
+        "sk": {
+          "name": "Srí Lanka",
+          "aliases": [
+            "Srílanská demokratická socialistická republika"
+          ]
+        },
+        "en": {
+          "name": "Sri Lanka",
+          "aliases": [
+            "Democratic Socialist Republic of Sri Lanka"
+          ]
+        }
+      },
+      "codes": [
+        "LK",
+        "LKA"
+      ]
+    },
+    "MDV": {
+      "names": {
+        "sk": {
+          "name": "Maldivy",
+          "aliases": [
+            "Maldivská republika"
+          ]
+        },
+        "en": {
+          "name": "Maldives",
+          "aliases": [
+            "Republic of the Maldives"
+          ]
+        }
+      },
+      "codes": [
+        "MV",
+        "MDV"
+      ]
+    },
+    "MMR": {
+      "names": {
+        "sk": {
+          "name": "Mjanmarsko",
+          "aliases": [
+            "Mjanmarská zväzová republika",
+            "Barma"
+          ]
+        },
+        "en": {
+          "name": "Myanmar",
+          "aliases": [
+            "Republic of the Union of Myanmar",
+            "Burma"
+          ]
+        }
+      },
+      "codes": [
+        "MM",
+        "MMR"
+      ]
+    },
+    "MNG": {
+      "names": {
+        "sk": {
+          "name": "Mongolsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Mongolia",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "MN",
+        "MNG"
+      ]
+    },
+    "MYS": {
+      "names": {
+        "sk": {
+          "name": "Malajzia",
+          "aliases": []
+        },
+        "en": {
+          "name": "Malaysia",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "MY",
+        "MYS"
+      ]
+    },
+    "NPL": {
+      "names": {
+        "sk": {
+          "name": "Nepál",
+          "aliases": [
+            "Nepálska federatívna demokratická republika"
+          ]
+        },
+        "en": {
+          "name": "Nepal",
+          "aliases": [
+            "Federal Democratic Republic of Nepal"
+          ]
+        }
+      },
+      "codes": [
+        "NP",
+        "NPL"
+      ]
+    },
+    "OMN": {
+      "names": {
+        "sk": {
+          "name": "Omán",
+          "aliases": [
+            "Ománsky sultanát"
+          ]
+        },
+        "en": {
+          "name": "Oman",
+          "aliases": [
+            "Sultanate of Oman"
+          ]
+        }
+      },
+      "codes": [
+        "OM",
+        "OMN"
+      ]
+    },
+    "PAK": {
+      "names": {
+        "sk": {
+          "name": "Pakistan",
+          "aliases": [
+            "Pakistanská islamská republika"
+          ]
+        },
+        "en": {
+          "name": "Pakistan",
+          "aliases": [
+            "Islamic Republic of Pakistan"
+          ]
+        }
+      },
+      "codes": [
+        "PK",
+        "PAK"
+      ]
+    },
+    "PHL": {
+      "names": {
+        "sk": {
+          "name": "Filipíny",
+          "aliases": [
+            "Filipínska republika"
+          ]
+        },
+        "en": {
+          "name": "Philippines",
+          "aliases": [
+            "Republic of the Philippines"
+          ]
+        }
+      },
+      "codes": [
+        "PH",
+        "PHL"
+      ]
+    },
+    "PRK": {
+      "names": {
+        "sk": {
+          "name": "Severná Kórea",
+          "aliases": [
+            "Kórejská ľudovodemokratická republika",
+            "KĽDR"
+          ]
+        },
+        "en": {
+          "name": "North Korea",
+          "aliases": [
+            "Democratic People's Republic of Korea",
+            "DPRK"
+          ]
+        }
+      },
+      "codes": [
+        "KP",
+        "PRK"
+      ]
+    },
+    "QAT": {
+      "names": {
+        "sk": {
+          "name": "Katar",
+          "aliases": [
+            "Katarský štát"
+          ]
+        },
+        "en": {
+          "name": "Qatar",
+          "aliases": [
+            "State of Qatar"
+          ]
+        }
+      },
+      "codes": [
+        "QA",
+        "QAT"
+      ]
+    },
+    "SAU": {
+      "names": {
+        "sk": {
+          "name": "Saudská Arábia",
+          "aliases": [
+            "Saudskoarabské kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Saudi Arabia",
+          "aliases": [
+            "Kingdom of Saudi Arabia"
+          ]
+        }
+      },
+      "codes": [
+        "SA",
+        "SAU"
+      ]
+    },
+    "SGP": {
+      "names": {
+        "sk": {
+          "name": "Singapur",
+          "aliases": [
+            "Singapurská republika"
+          ]
+        },
+        "en": {
+          "name": "Singapore",
+          "aliases": [
+            "Republic of Singapore"
+          ]
+        }
+      },
+      "codes": [
+        "SG",
+        "SGP"
+      ]
+    },
+    "SYR": {
+      "names": {
+        "sk": {
+          "name": "Sýria",
+          "aliases": [
+            "Sýrska arabská republika"
+          ]
+        },
+        "en": {
+          "name": "Syria",
+          "aliases": [
+            "Syrian Arab Republic"
+          ]
+        }
+      },
+      "codes": [
+        "SY",
+        "SYR"
+      ]
+    },
+    "THA": {
+      "names": {
+        "sk": {
+          "name": "Thajsko",
+          "aliases": [
+            "Thajské kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Thailand",
+          "aliases": [
+            "Kingdom of Thailand"
+          ]
+        }
+      },
+      "codes": [
+        "TH",
+        "THA"
+      ]
+    },
+    "TJK": {
+      "names": {
+        "sk": {
+          "name": "Tadžikistan",
+          "aliases": [
+            "Tadžická republika"
+          ]
+        },
+        "en": {
+          "name": "Tajikistan",
+          "aliases": [
+            "Republic of Tajikistan"
+          ]
+        }
+      },
+      "codes": [
+        "TJ",
+        "TJK"
+      ]
+    },
+    "TKM": {
+      "names": {
+        "sk": {
+          "name": "Turkménsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Turkmenistan",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "TM",
+        "TKM"
+      ]
+    },
+    "TLS": {
+      "names": {
+        "sk": {
+          "name": "Východný Timor",
+          "aliases": [
+            "Východotimorská demokratická republika"
+          ]
+        },
+        "en": {
+          "name": "Timor-Leste",
+          "aliases": [
+            "Democratic Republic of Timor-Leste",
+            "East Timor"
+          ]
+        }
+      },
+      "codes": [
+        "TL",
+        "TLS"
+      ]
+    },
+    "TUR": {
+      "names": {
+        "sk": {
+          "name": "Turecko",
+          "aliases": [
+            "Turecká republika"
+          ]
+        },
+        "en": {
+          "name": "Türkiye",
+          "aliases": [
+            "Republic of Türkiye",
+            "Turkey"
+          ]
+        }
+      },
+      "codes": [
+        "TR",
+        "TUR"
+      ]
+    },
+    "UZB": {
+      "names": {
+        "sk": {
+          "name": "Uzbekistan",
+          "aliases": [
+            "Uzbecká republika"
+          ]
+        },
+        "en": {
+          "name": "Uzbekistan",
+          "aliases": [
+            "Republic of Uzbekistan"
+          ]
+        }
+      },
+      "codes": [
+        "UZ",
+        "UZB"
+      ]
+    },
+    "VNM": {
+      "names": {
+        "sk": {
+          "name": "Vietnam",
+          "aliases": [
+            "Vietnamská socialistická republika"
+          ]
+        },
+        "en": {
+          "name": "Vietnam",
+          "aliases": [
+            "Socialist Republic of Vietnam",
+            "Viet Nam"
+          ]
+        }
+      },
+      "codes": [
+        "VN",
+        "VNM"
+      ]
+    },
+    "YEM": {
+      "names": {
+        "sk": {
+          "name": "Jemen",
+          "aliases": [
+            "Jemenská republika"
+          ]
+        },
+        "en": {
+          "name": "Yemen",
+          "aliases": [
+            "Republic of Yemen"
+          ]
+        }
+      },
+      "codes": [
+        "YE",
+        "YEM"
+      ]
+    },
+    "ATG": {
+      "names": {
+        "sk": {
+          "name": "Antigua a Barbuda",
+          "aliases": []
+        },
+        "en": {
+          "name": "Antigua and Barbuda",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "AG",
+        "ATG"
+      ]
+    },
+    "BHS": {
+      "names": {
+        "sk": {
+          "name": "Bahamy",
+          "aliases": [
+            "Bahamské spoločenstvo"
+          ]
+        },
+        "en": {
+          "name": "Bahamas",
+          "aliases": [
+            "Commonwealth of the Bahamas"
+          ]
+        }
+      },
+      "codes": [
+        "BS",
+        "BHS"
+      ]
+    },
+    "BLZ": {
+      "names": {
+        "sk": {
+          "name": "Belize",
+          "aliases": []
+        },
+        "en": {
+          "name": "Belize",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "BZ",
+        "BLZ"
+      ]
+    },
+    "BRB": {
+      "names": {
+        "sk": {
+          "name": "Barbados",
+          "aliases": []
+        },
+        "en": {
+          "name": "Barbados",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "BB",
+        "BRB"
+      ]
+    },
+    "CAN": {
+      "names": {
+        "sk": {
+          "name": "Kanada",
+          "aliases": []
+        },
+        "en": {
+          "name": "Canada",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "CA",
+        "CAN"
+      ]
+    },
+    "CRI": {
+      "names": {
+        "sk": {
+          "name": "Kostarika",
+          "aliases": [
+            "Kostarická republika"
+          ]
+        },
+        "en": {
+          "name": "Costa Rica",
+          "aliases": [
+            "Republic of Costa Rica"
+          ]
+        }
+      },
+      "codes": [
+        "CR",
+        "CRI"
+      ]
+    },
+    "CUB": {
+      "names": {
+        "sk": {
+          "name": "Kuba",
+          "aliases": [
+            "Kubánska republika"
+          ]
+        },
+        "en": {
+          "name": "Cuba",
+          "aliases": [
+            "Republic of Cuba"
+          ]
+        }
+      },
+      "codes": [
+        "CU",
+        "CUB"
+      ]
+    },
+    "DMA": {
+      "names": {
+        "sk": {
+          "name": "Dominika",
+          "aliases": [
+            "Dominické spoločenstvo"
+          ]
+        },
+        "en": {
+          "name": "Dominica",
+          "aliases": [
+            "Commonwealth of Dominica"
+          ]
+        }
+      },
+      "codes": [
+        "DM",
+        "DMA"
+      ]
+    },
+    "DOM": {
+      "names": {
+        "sk": {
+          "name": "Dominikánska republika",
+          "aliases": []
+        },
+        "en": {
+          "name": "Dominican Republic",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "DO",
+        "DOM"
+      ]
+    },
+    "GRD": {
+      "names": {
+        "sk": {
+          "name": "Grenada",
+          "aliases": []
+        },
+        "en": {
+          "name": "Grenada",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "GD",
+        "GRD"
+      ]
+    },
+    "GTM": {
+      "names": {
+        "sk": {
+          "name": "Guatemala",
+          "aliases": [
+            "Guatemalská republika"
+          ]
+        },
+        "en": {
+          "name": "Guatemala",
+          "aliases": [
+            "Republic of Guatemala"
+          ]
+        }
+      },
+      "codes": [
+        "GT",
+        "GTM"
+      ]
+    },
+    "HND": {
+      "names": {
+        "sk": {
+          "name": "Honduras",
+          "aliases": [
+            "Honduraská republika"
+          ]
+        },
+        "en": {
+          "name": "Honduras",
+          "aliases": [
+            "Republic of Honduras"
+          ]
+        }
+      },
+      "codes": [
+        "HN",
+        "HND"
+      ]
+    },
+    "HTI": {
+      "names": {
+        "sk": {
+          "name": "Haiti",
+          "aliases": [
+            "Haitská republika"
+          ]
+        },
+        "en": {
+          "name": "Haiti",
+          "aliases": [
+            "Republic of Haiti"
+          ]
+        }
+      },
+      "codes": [
+        "HT",
+        "HTI"
+      ]
+    },
+    "JAM": {
+      "names": {
+        "sk": {
+          "name": "Jamajka",
+          "aliases": []
+        },
+        "en": {
+          "name": "Jamaica",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "JM",
+        "JAM"
+      ]
+    },
+    "KNA": {
+      "names": {
+        "sk": {
+          "name": "Svätý Krištof a Nevis",
+          "aliases": [
+            "Federácia Svätého Krištofa a Nevisu"
+          ]
+        },
+        "en": {
+          "name": "Saint Kitts and Nevis",
+          "aliases": [
+            "Federation of Saint Christopher and Nevis",
+            "St Kitts and Nevis",
+            "Saint Christopher and Nevis"
+          ]
+        }
+      },
+      "codes": [
+        "KN",
+        "KNA"
+      ]
+    },
+    "LCA": {
+      "names": {
+        "sk": {
+          "name": "Svätá Lucia",
+          "aliases": []
+        },
+        "en": {
+          "name": "Saint Lucia",
+          "aliases": [
+            "St Lucia"
+          ]
+        }
+      },
+      "codes": [
+        "LC",
+        "LCA"
+      ]
+    },
+    "MEX": {
+      "names": {
+        "sk": {
+          "name": "Mexiko",
+          "aliases": [
+            "Spojené štáty mexické"
+          ]
+        },
+        "en": {
+          "name": "Mexico",
+          "aliases": [
+            "United Mexican States"
+          ]
+        }
+      },
+      "codes": [
+        "MX",
+        "MEX"
+      ]
+    },
+    "NIC": {
+      "names": {
+        "sk": {
+          "name": "Nikaragua",
+          "aliases": [
+            "Nikaragujská republika"
+          ]
+        },
+        "en": {
+          "name": "Nicaragua",
+          "aliases": [
+            "Republic of Nicaragua"
+          ]
+        }
+      },
+      "codes": [
+        "NI",
+        "NIC"
+      ]
+    },
+    "PAN": {
+      "names": {
+        "sk": {
+          "name": "Panama",
+          "aliases": [
+            "Panamská republika"
+          ]
+        },
+        "en": {
+          "name": "Panama",
+          "aliases": [
+            "Republic of Panama"
+          ]
+        }
+      },
+      "codes": [
+        "PA",
+        "PAN"
+      ]
+    },
+    "SLV": {
+      "names": {
+        "sk": {
+          "name": "Salvádor",
+          "aliases": [
+            "Salvádorská republika"
+          ]
+        },
+        "en": {
+          "name": "El Salvador",
+          "aliases": [
+            "Republic of El Salvador"
+          ]
+        }
+      },
+      "codes": [
+        "SV",
+        "SLV"
+      ]
+    },
+    "TTO": {
+      "names": {
+        "sk": {
+          "name": "Trinidad a Tobago",
+          "aliases": [
+            "Republika Trinidad a Tobaga"
+          ]
+        },
+        "en": {
+          "name": "Trinidad and Tobago",
+          "aliases": [
+            "Republic of Trinidad and Tobago"
+          ]
+        }
+      },
+      "codes": [
+        "TT",
+        "TTO"
+      ]
+    },
+    "VCT": {
+      "names": {
+        "sk": {
+          "name": "Svätý Vincent a Grenadíny",
+          "aliases": []
+        },
+        "en": {
+          "name": "Saint Vincent and the Grenadines",
+          "aliases": [
+            "St Vincent and the Grenadines"
+          ]
+        }
+      },
+      "codes": [
+        "VC",
+        "VCT"
+      ]
+    },
+    "ARG": {
+      "names": {
+        "sk": {
+          "name": "Argentína",
+          "aliases": [
+            "Argentínska republika"
+          ]
+        },
+        "en": {
+          "name": "Argentina",
+          "aliases": [
+            "Argentine Republic"
+          ]
+        }
+      },
+      "codes": [
+        "AR",
+        "ARG"
+      ]
+    },
+    "BOL": {
+      "names": {
+        "sk": {
+          "name": "Bolívia",
+          "aliases": [
+            "Bolívijská republika"
+          ]
+        },
+        "en": {
+          "name": "Bolivia",
+          "aliases": [
+            "Plurinational State of Bolivia"
+          ]
+        }
+      },
+      "codes": [
+        "BO",
+        "BOL"
+      ]
+    },
+    "BRA": {
+      "names": {
+        "sk": {
+          "name": "Brazília",
+          "aliases": [
+            "Brazílska federatívna republika"
+          ]
+        },
+        "en": {
+          "name": "Brazil",
+          "aliases": [
+            "Federative Republic of Brazil"
+          ]
+        }
+      },
+      "codes": [
+        "BR",
+        "BRA"
+      ]
+    },
+    "CHL": {
+      "names": {
+        "sk": {
+          "name": "Čile",
+          "aliases": [
+            "Čílska republika"
+          ]
+        },
+        "en": {
+          "name": "Chile",
+          "aliases": [
+            "Republic of Chile"
+          ]
+        }
+      },
+      "codes": [
+        "CL",
+        "CHL"
+      ]
+    },
+    "COL": {
+      "names": {
+        "sk": {
+          "name": "Kolumbia",
+          "aliases": [
+            "Kolumbijská republika"
+          ]
+        },
+        "en": {
+          "name": "Colombia",
+          "aliases": [
+            "Republic of Colombia"
+          ]
+        }
+      },
+      "codes": [
+        "CO",
+        "COL"
+      ]
+    },
+    "ECU": {
+      "names": {
+        "sk": {
+          "name": "Ekvádor",
+          "aliases": [
+            "Ekvádorská republika"
+          ]
+        },
+        "en": {
+          "name": "Ecuador",
+          "aliases": [
+            "Republic of Ecuador"
+          ]
+        }
+      },
+      "codes": [
+        "EC",
+        "ECU"
+      ]
+    },
+    "GUY": {
+      "names": {
+        "sk": {
+          "name": "Guyana",
+          "aliases": [
+            "Guyanská kooperatívna republika"
+          ]
+        },
+        "en": {
+          "name": "Guyana",
+          "aliases": [
+            "Co-operative Republic of Guyana"
+          ]
+        }
+      },
+      "codes": [
+        "GY",
+        "GUY"
+      ]
+    },
+    "PER": {
+      "names": {
+        "sk": {
+          "name": "Peru",
+          "aliases": [
+            "Peruánska republika"
+          ]
+        },
+        "en": {
+          "name": "Peru",
+          "aliases": [
+            "Republic of Peru"
+          ]
+        }
+      },
+      "codes": [
+        "PE",
+        "PER"
+      ]
+    },
+    "PRY": {
+      "names": {
+        "sk": {
+          "name": "Paraguaj",
+          "aliases": [
+            "Paraguajská republika"
+          ]
+        },
+        "en": {
+          "name": "Paraguay",
+          "aliases": [
+            "Republic of Paraguay"
+          ]
+        }
+      },
+      "codes": [
+        "PY",
+        "PRY"
+      ]
+    },
+    "SUR": {
+      "names": {
+        "sk": {
+          "name": "Surinam",
+          "aliases": [
+            "Surinamská republika"
+          ]
+        },
+        "en": {
+          "name": "Suriname",
+          "aliases": [
+            "Republic of Suriname"
+          ]
+        }
+      },
+      "codes": [
+        "SR",
+        "SUR"
+      ]
+    },
+    "URY": {
+      "names": {
+        "sk": {
+          "name": "Uruguaj",
+          "aliases": [
+            "Uruguajská východná republika"
+          ]
+        },
+        "en": {
+          "name": "Uruguay",
+          "aliases": [
+            "Oriental Republic of Uruguay"
+          ]
+        }
+      },
+      "codes": [
+        "UY",
+        "URY"
+      ]
+    },
+    "VEN": {
+      "names": {
+        "sk": {
+          "name": "Venezuela",
+          "aliases": [
+            "Venezuelská bolívarovská republika"
+          ]
+        },
+        "en": {
+          "name": "Venezuela",
+          "aliases": [
+            "Bolivarian Republic of Venezuela"
+          ]
+        }
+      },
+      "codes": [
+        "VE",
+        "VEN"
+      ]
+    },
+    "AGO": {
+      "names": {
+        "sk": {
+          "name": "Angola",
+          "aliases": [
+            "Angolská republika"
+          ]
+        },
+        "en": {
+          "name": "Angola",
+          "aliases": [
+            "Republic of Angola"
+          ]
+        }
+      },
+      "codes": [
+        "AO",
+        "AGO"
+      ]
+    },
+    "BDI": {
+      "names": {
+        "sk": {
+          "name": "Burundi",
+          "aliases": [
+            "Burundská republika"
+          ]
+        },
+        "en": {
+          "name": "Burundi",
+          "aliases": [
+            "Republic of Burundi"
+          ]
+        }
+      },
+      "codes": [
+        "BI",
+        "BDI"
+      ]
+    },
+    "BEN": {
+      "names": {
+        "sk": {
+          "name": "Benin",
+          "aliases": [
+            "Beninská republika"
+          ]
+        },
+        "en": {
+          "name": "Benin",
+          "aliases": [
+            "Republic of Benin"
+          ]
+        }
+      },
+      "codes": [
+        "BJ",
+        "BEN"
+      ]
+    },
+    "BFA": {
+      "names": {
+        "sk": {
+          "name": "Burkina Faso",
+          "aliases": []
+        },
+        "en": {
+          "name": "Burkina Faso",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "BF",
+        "BFA"
+      ]
+    },
+    "BWA": {
+      "names": {
+        "sk": {
+          "name": "Botswana",
+          "aliases": [
+            "Botswanská republika"
+          ]
+        },
+        "en": {
+          "name": "Botswana",
+          "aliases": [
+            "Republic of Botswana"
+          ]
+        }
+      },
+      "codes": [
+        "BW",
+        "BWA"
+      ]
+    },
+    "CAF": {
+      "names": {
+        "sk": {
+          "name": "Stredoafrická republika",
+          "aliases": [
+            "SAR"
+          ]
+        },
+        "en": {
+          "name": "Central African Republic",
+          "aliases": [
+            "CAR"
+          ]
+        }
+      },
+      "codes": [
+        "CF",
+        "CAF"
+      ]
+    },
+    "CIV": {
+      "names": {
+        "sk": {
+          "name": "Pobrežie Slonoviny",
+          "aliases": [
+            "Republika Pobrežie Slonoviny"
+          ]
+        },
+        "en": {
+          "name": "Ivory Coast",
+          "aliases": [
+            "Republic of Côte d'Ivoire",
+            "Côte d’Ivoire",
+            "Cote d'Ivoire"
+          ]
+        }
+      },
+      "codes": [
+        "CI",
+        "CIV"
+      ]
+    },
+    "CMR": {
+      "names": {
+        "sk": {
+          "name": "Kamerun",
+          "aliases": [
+            "Kamerunská republika"
+          ]
+        },
+        "en": {
+          "name": "Cameroon",
+          "aliases": [
+            "Republic of Cameroon"
+          ]
+        }
+      },
+      "codes": [
+        "CM",
+        "CMR"
+      ]
+    },
+    "COD": {
+      "names": {
+        "sk": {
+          "name": "Konžská demokratická republika",
+          "aliases": [
+            "Kongo",
+            "Demokratická republika Kongo",
+            "DR Kongo",
+            "Kongo-Kinshasa"
+          ]
+        },
+        "en": {
+          "name": "DR Congo",
+          "aliases": [
+            "Democratic Republic of the Congo",
+            "DRC",
+            "Congo-Kinshasa",
+            "Democratic Republic of Congo"
+          ]
+        }
+      },
+      "codes": [
+        "CD",
+        "COD"
+      ]
+    },
+    "COG": {
+      "names": {
+        "sk": {
+          "name": "Konžská republika",
+          "aliases": [
+            "Kongo",
+            "Republika Kongo",
+            "Kongo-Brazzaville"
+          ]
+        },
+        "en": {
+          "name": "Congo",
+          "aliases": [
+            "Republic of the Congo",
+            "Congo-Brazzaville"
+          ]
+        }
+      },
+      "codes": [
+        "CG",
+        "COG"
+      ]
+    },
+    "COM": {
+      "names": {
+        "sk": {
+          "name": "Komory",
+          "aliases": [
+            "Komorská únia"
+          ]
+        },
+        "en": {
+          "name": "Comoros",
+          "aliases": [
+            "Union of the Comoros"
+          ]
+        }
+      },
+      "codes": [
+        "KM",
+        "COM"
+      ]
+    },
+    "CPV": {
+      "names": {
+        "sk": {
+          "name": "Kapverdy",
+          "aliases": [
+            "Kapverdská republika"
+          ]
+        },
+        "en": {
+          "name": "Cape Verde",
+          "aliases": [
+            "Republic of Cabo Verde",
+            "Cabo Verde"
+          ]
+        }
+      },
+      "codes": [
+        "CV",
+        "CPV"
+      ]
+    },
+    "DJI": {
+      "names": {
+        "sk": {
+          "name": "Džibutsko",
+          "aliases": [
+            "Džibutská republika"
+          ]
+        },
+        "en": {
+          "name": "Djibouti",
+          "aliases": [
+            "Republic of Djibouti"
+          ]
+        }
+      },
+      "codes": [
+        "DJ",
+        "DJI"
+      ]
+    },
+    "DZA": {
+      "names": {
+        "sk": {
+          "name": "Alžírsko",
+          "aliases": [
+            "Alžírska demokratická ľudová republika"
+          ]
+        },
+        "en": {
+          "name": "Algeria",
+          "aliases": [
+            "People's Democratic Republic of Algeria"
+          ]
+        }
+      },
+      "codes": [
+        "DZ",
+        "DZA"
+      ]
+    },
+    "EGY": {
+      "names": {
+        "sk": {
+          "name": "Egypt",
+          "aliases": [
+            "Egyptská arabská republika"
+          ]
+        },
+        "en": {
+          "name": "Egypt",
+          "aliases": [
+            "Arab Republic of Egypt"
+          ]
+        }
+      },
+      "codes": [
+        "EG",
+        "EGY"
+      ]
+    },
+    "ERI": {
+      "names": {
+        "sk": {
+          "name": "Eritrea",
+          "aliases": [
+            "Eritrejský štát"
+          ]
+        },
+        "en": {
+          "name": "Eritrea",
+          "aliases": [
+            "State of Eritrea"
+          ]
+        }
+      },
+      "codes": [
+        "ER",
+        "ERI"
+      ]
+    },
+    "ETH": {
+      "names": {
+        "sk": {
+          "name": "Etiópia",
+          "aliases": [
+            "Etiópska federatívna demokratická republika"
+          ]
+        },
+        "en": {
+          "name": "Ethiopia",
+          "aliases": [
+            "Federal Democratic Republic of Ethiopia"
+          ]
+        }
+      },
+      "codes": [
+        "ET",
+        "ETH"
+      ]
+    },
+    "GAB": {
+      "names": {
+        "sk": {
+          "name": "Gabon",
+          "aliases": [
+            "Gabonská republika"
+          ]
+        },
+        "en": {
+          "name": "Gabon",
+          "aliases": [
+            "Gabonese Republic"
+          ]
+        }
+      },
+      "codes": [
+        "GA",
+        "GAB"
+      ]
+    },
+    "GHA": {
+      "names": {
+        "sk": {
+          "name": "Ghana",
+          "aliases": [
+            "Ghanská republika"
+          ]
+        },
+        "en": {
+          "name": "Ghana",
+          "aliases": [
+            "Republic of Ghana"
+          ]
+        }
+      },
+      "codes": [
+        "GH",
+        "GHA"
+      ]
+    },
+    "GIN": {
+      "names": {
+        "sk": {
+          "name": "Guinea",
+          "aliases": [
+            "Guinejská republika"
+          ]
+        },
+        "en": {
+          "name": "Guinea",
+          "aliases": [
+            "Republic of Guinea"
+          ]
+        }
+      },
+      "codes": [
+        "GN",
+        "GIN"
+      ]
+    },
+    "GMB": {
+      "names": {
+        "sk": {
+          "name": "Gambia",
+          "aliases": [
+            "Gambijská republika"
+          ]
+        },
+        "en": {
+          "name": "Gambia",
+          "aliases": [
+            "Republic of the Gambia"
+          ]
+        }
+      },
+      "codes": [
+        "GM",
+        "GMB"
+      ]
+    },
+    "GNB": {
+      "names": {
+        "sk": {
+          "name": "Guinea-Bissau",
+          "aliases": [
+            "Guinejsko-bissauská republika"
+          ]
+        },
+        "en": {
+          "name": "Guinea-Bissau",
+          "aliases": [
+            "Republic of Guinea-Bissau"
+          ]
+        }
+      },
+      "codes": [
+        "GW",
+        "GNB"
+      ]
+    },
+    "GNQ": {
+      "names": {
+        "sk": {
+          "name": "Rovníková Guinea",
+          "aliases": [
+            "Republika Rovníkovej Guiney"
+          ]
+        },
+        "en": {
+          "name": "Equatorial Guinea",
+          "aliases": [
+            "Republic of Equatorial Guinea"
+          ]
+        }
+      },
+      "codes": [
+        "GQ",
+        "GNQ"
+      ]
+    },
+    "KEN": {
+      "names": {
+        "sk": {
+          "name": "Keňa",
+          "aliases": [
+            "Kenská republika"
+          ]
+        },
+        "en": {
+          "name": "Kenya",
+          "aliases": [
+            "Republic of Kenya"
+          ]
+        }
+      },
+      "codes": [
+        "KE",
+        "KEN"
+      ]
+    },
+    "LBR": {
+      "names": {
+        "sk": {
+          "name": "Libéria",
+          "aliases": [
+            "Libérijská republika"
+          ]
+        },
+        "en": {
+          "name": "Liberia",
+          "aliases": [
+            "Republic of Liberia"
+          ]
+        }
+      },
+      "codes": [
+        "LR",
+        "LBR"
+      ]
+    },
+    "LBY": {
+      "names": {
+        "sk": {
+          "name": "Líbya",
+          "aliases": []
+        },
+        "en": {
+          "name": "Libya",
+          "aliases": [
+            "State of Libya"
+          ]
+        }
+      },
+      "codes": [
+        "LY",
+        "LBY"
+      ]
+    },
+    "LSO": {
+      "names": {
+        "sk": {
+          "name": "Lesotho",
+          "aliases": [
+            "Lesothské kráľovstvo"
+          ]
+        },
+        "en": {
+          "name": "Lesotho",
+          "aliases": [
+            "Kingdom of Lesotho"
+          ]
+        }
+      },
+      "codes": [
+        "LS",
+        "LSO"
+      ]
+    },
+    "MAR": {
+      "names": {
+        "sk": {
+          "name": "Maroko",
+          "aliases": [
+            "Marocké kniežatstvo"
+          ]
+        },
+        "en": {
+          "name": "Morocco",
+          "aliases": [
+            "Kingdom of Morocco"
+          ]
+        }
+      },
+      "codes": [
+        "MA",
+        "MAR"
+      ]
+    },
+    "MDG": {
+      "names": {
+        "sk": {
+          "name": "Madagaskar",
+          "aliases": [
+            "Madagaskarská republika"
+          ]
+        },
+        "en": {
+          "name": "Madagascar",
+          "aliases": [
+            "Republic of Madagascar"
+          ]
+        }
+      },
+      "codes": [
+        "MG",
+        "MDG"
+      ]
+    },
+    "MLI": {
+      "names": {
+        "sk": {
+          "name": "Mali",
+          "aliases": [
+            "Malijská republika"
+          ]
+        },
+        "en": {
+          "name": "Mali",
+          "aliases": [
+            "Republic of Mali"
+          ]
+        }
+      },
+      "codes": [
+        "ML",
+        "MLI"
+      ]
+    },
+    "MOZ": {
+      "names": {
+        "sk": {
+          "name": "Mozambik",
+          "aliases": [
+            "Mozambická republika"
+          ]
+        },
+        "en": {
+          "name": "Mozambique",
+          "aliases": [
+            "Republic of Mozambique"
+          ]
+        }
+      },
+      "codes": [
+        "MZ",
+        "MOZ"
+      ]
+    },
+    "MRT": {
+      "names": {
+        "sk": {
+          "name": "Mauritánia",
+          "aliases": [
+            "Mauritánska islamská republika"
+          ]
+        },
+        "en": {
+          "name": "Mauritania",
+          "aliases": [
+            "Islamic Republic of Mauritania"
+          ]
+        }
+      },
+      "codes": [
+        "MR",
+        "MRT"
+      ]
+    },
+    "MUS": {
+      "names": {
+        "sk": {
+          "name": "Maurícius",
+          "aliases": [
+            "Maurícijská republika"
+          ]
+        },
+        "en": {
+          "name": "Mauritius",
+          "aliases": [
+            "Republic of Mauritius"
+          ]
+        }
+      },
+      "codes": [
+        "MU",
+        "MUS"
+      ]
+    },
+    "MWI": {
+      "names": {
+        "sk": {
+          "name": "Malawi",
+          "aliases": [
+            "Malawijská republika"
+          ]
+        },
+        "en": {
+          "name": "Malawi",
+          "aliases": [
+            "Republic of Malawi"
+          ]
+        }
+      },
+      "codes": [
+        "MW",
+        "MWI"
+      ]
+    },
+    "NAM": {
+      "names": {
+        "sk": {
+          "name": "Namíbia",
+          "aliases": [
+            "Namíbijská republika"
+          ]
+        },
+        "en": {
+          "name": "Namibia",
+          "aliases": [
+            "Republic of Namibia"
+          ]
+        }
+      },
+      "codes": [
+        "NA",
+        "NAM"
+      ]
+    },
+    "NER": {
+      "names": {
+        "sk": {
+          "name": "Niger",
+          "aliases": [
+            "Nigérská republika"
+          ]
+        },
+        "en": {
+          "name": "Niger",
+          "aliases": [
+            "Republic of Niger"
+          ]
+        }
+      },
+      "codes": [
+        "NE",
+        "NER"
+      ]
+    },
+    "NGA": {
+      "names": {
+        "sk": {
+          "name": "Nigéria",
+          "aliases": [
+            "Nigérijská federatívna republika"
+          ]
+        },
+        "en": {
+          "name": "Nigeria",
+          "aliases": [
+            "Federal Republic of Nigeria"
+          ]
+        }
+      },
+      "codes": [
+        "NG",
+        "NGA"
+      ]
+    },
+    "RWA": {
+      "names": {
+        "sk": {
+          "name": "Rwanda",
+          "aliases": [
+            "Rwandská republika"
+          ]
+        },
+        "en": {
+          "name": "Rwanda",
+          "aliases": [
+            "Republic of Rwanda"
+          ]
+        }
+      },
+      "codes": [
+        "RW",
+        "RWA"
+      ]
+    },
+    "SDN": {
+      "names": {
+        "sk": {
+          "name": "Sudán",
+          "aliases": [
+            "Sudánska republika"
+          ]
+        },
+        "en": {
+          "name": "Sudan",
+          "aliases": [
+            "Republic of the Sudan"
+          ]
+        }
+      },
+      "codes": [
+        "SD",
+        "SDN"
+      ]
+    },
+    "SEN": {
+      "names": {
+        "sk": {
+          "name": "Senegal",
+          "aliases": [
+            "Senegalská republika"
+          ]
+        },
+        "en": {
+          "name": "Senegal",
+          "aliases": [
+            "Republic of Senegal"
+          ]
+        }
+      },
+      "codes": [
+        "SN",
+        "SEN"
+      ]
+    },
+    "SLE": {
+      "names": {
+        "sk": {
+          "name": "Sierra Leone",
+          "aliases": [
+            "Sierraleonská republika"
+          ]
+        },
+        "en": {
+          "name": "Sierra Leone",
+          "aliases": [
+            "Republic of Sierra Leone"
+          ]
+        }
+      },
+      "codes": [
+        "SL",
+        "SLE"
+      ]
+    },
+    "SOM": {
+      "names": {
+        "sk": {
+          "name": "Somálsko",
+          "aliases": [
+            "Somálska federatívna republika"
+          ]
+        },
+        "en": {
+          "name": "Somalia",
+          "aliases": [
+            "Federal Republic of Somalia"
+          ]
+        }
+      },
+      "codes": [
+        "SO",
+        "SOM"
+      ]
+    },
+    "SSD": {
+      "names": {
+        "sk": {
+          "name": "Južný Sudán",
+          "aliases": [
+            "Juhosudánska republika"
+          ]
+        },
+        "en": {
+          "name": "South Sudan",
+          "aliases": [
+            "Republic of South Sudan"
+          ]
+        }
+      },
+      "codes": [
+        "SS",
+        "SSD"
+      ]
+    },
+    "STP": {
+      "names": {
+        "sk": {
+          "name": "Svätý Tomáš a Princov ostrov",
+          "aliases": [
+            "Demokratická republika Svätého Tomáša a Princovho ostrova"
+          ]
+        },
+        "en": {
+          "name": "São Tomé and Príncipe",
+          "aliases": [
+            "Democratic Republic of São Tomé and Príncipe"
+          ]
+        }
+      },
+      "codes": [
+        "ST",
+        "STP"
+      ]
+    },
+    "SWZ": {
+      "names": {
+        "sk": {
+          "name": "Eswatini",
+          "aliases": [
+            "Svazijské kráľovstvo",
+            "Svazijsko"
+          ]
+        },
+        "en": {
+          "name": "Eswatini",
+          "aliases": [
+            "Kingdom of Eswatini",
+            "Swaziland"
+          ]
+        }
+      },
+      "codes": [
+        "SZ",
+        "SWZ"
+      ]
+    },
+    "SYC": {
+      "names": {
+        "sk": {
+          "name": "Seychely",
+          "aliases": [
+            "Seychelská republika"
+          ]
+        },
+        "en": {
+          "name": "Seychelles",
+          "aliases": [
+            "Republic of Seychelles"
+          ]
+        }
+      },
+      "codes": [
+        "SC",
+        "SYC"
+      ]
+    },
+    "TCD": {
+      "names": {
+        "sk": {
+          "name": "Čad",
+          "aliases": [
+            "Čadská republika"
+          ]
+        },
+        "en": {
+          "name": "Chad",
+          "aliases": [
+            "Republic of Chad"
+          ]
+        }
+      },
+      "codes": [
+        "TD",
+        "TCD"
+      ]
+    },
+    "TGO": {
+      "names": {
+        "sk": {
+          "name": "Togo",
+          "aliases": [
+            "Togská republika"
+          ]
+        },
+        "en": {
+          "name": "Togo",
+          "aliases": [
+            "Togolese Republic"
+          ]
+        }
+      },
+      "codes": [
+        "TG",
+        "TGO"
+      ]
+    },
+    "TUN": {
+      "names": {
+        "sk": {
+          "name": "Tunisko",
+          "aliases": [
+            "Tuniská republika"
+          ]
+        },
+        "en": {
+          "name": "Tunisia",
+          "aliases": [
+            "Tunisian Republic"
+          ]
+        }
+      },
+      "codes": [
+        "TN",
+        "TUN"
+      ]
+    },
+    "TZA": {
+      "names": {
+        "sk": {
+          "name": "Tanzánia",
+          "aliases": [
+            "Tanzánijská zjednotená republika"
+          ]
+        },
+        "en": {
+          "name": "Tanzania",
+          "aliases": [
+            "United Republic of Tanzania"
+          ]
+        }
+      },
+      "codes": [
+        "TZ",
+        "TZA"
+      ]
+    },
+    "UGA": {
+      "names": {
+        "sk": {
+          "name": "Uganda",
+          "aliases": [
+            "Ugandská republika"
+          ]
+        },
+        "en": {
+          "name": "Uganda",
+          "aliases": [
+            "Republic of Uganda"
+          ]
+        }
+      },
+      "codes": [
+        "UG",
+        "UGA"
+      ]
+    },
+    "ZAF": {
+      "names": {
+        "sk": {
+          "name": "Juhoafrická republika",
+          "aliases": [
+            "JAR"
+          ]
+        },
+        "en": {
+          "name": "South Africa",
+          "aliases": [
+            "Republic of South Africa",
+            "RSA"
+          ]
+        }
+      },
+      "codes": [
+        "ZA",
+        "ZAF"
+      ]
+    },
+    "ZMB": {
+      "names": {
+        "sk": {
+          "name": "Zambia",
+          "aliases": [
+            "Zambijská republika"
+          ]
+        },
+        "en": {
+          "name": "Zambia",
+          "aliases": [
+            "Republic of Zambia"
+          ]
+        }
+      },
+      "codes": [
+        "ZM",
+        "ZMB"
+      ]
+    },
+    "ZWE": {
+      "names": {
+        "sk": {
+          "name": "Zimbabwe",
+          "aliases": [
+            "Zimbabwianska republika"
+          ]
+        },
+        "en": {
+          "name": "Zimbabwe",
+          "aliases": [
+            "Republic of Zimbabwe"
+          ]
+        }
+      },
+      "codes": [
+        "ZW",
+        "ZWE"
+      ]
+    },
+    "US-MN": {
+      "names": {
+        "sk": {
+          "name": "Minnesota",
+          "aliases": []
+        },
+        "en": {
+          "name": "Minnesota",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-MN",
+        "MN"
+      ]
+    },
+    "US-MT": {
+      "names": {
+        "sk": {
+          "name": "Montana",
+          "aliases": []
+        },
+        "en": {
+          "name": "Montana",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-MT",
+        "MT"
+      ]
+    },
+    "US-ND": {
+      "names": {
+        "sk": {
+          "name": "Severná Dakota",
+          "aliases": []
+        },
+        "en": {
+          "name": "North Dakota",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-ND",
+        "ND"
+      ]
+    },
+    "US-HI": {
+      "names": {
+        "sk": {
+          "name": "Havaj",
+          "aliases": []
+        },
+        "en": {
+          "name": "Hawaii",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-HI",
+        "HI"
+      ]
+    },
+    "US-ID": {
+      "names": {
+        "sk": {
+          "name": "Idaho",
+          "aliases": []
+        },
+        "en": {
+          "name": "Idaho",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-ID",
+        "ID"
+      ]
+    },
+    "US-WA": {
+      "names": {
+        "sk": {
+          "name": "Washington",
+          "aliases": []
+        },
+        "en": {
+          "name": "Washington",
+          "aliases": [
+            "Washington State"
+          ]
+        }
+      },
+      "codes": [
+        "US-WA",
+        "WA"
+      ]
+    },
+    "US-AZ": {
+      "names": {
+        "sk": {
+          "name": "Arizona",
+          "aliases": []
+        },
+        "en": {
+          "name": "Arizona",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-AZ",
+        "AZ"
+      ]
+    },
+    "US-CA": {
+      "names": {
+        "sk": {
+          "name": "Kalifornia",
+          "aliases": []
+        },
+        "en": {
+          "name": "California",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-CA",
+        "CA"
+      ]
+    },
+    "US-CO": {
+      "names": {
+        "sk": {
+          "name": "Colorado",
+          "aliases": []
+        },
+        "en": {
+          "name": "Colorado",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-CO",
+        "CO"
+      ]
+    },
+    "US-NV": {
+      "names": {
+        "sk": {
+          "name": "Nevada",
+          "aliases": []
+        },
+        "en": {
+          "name": "Nevada",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-NV",
+        "NV"
+      ]
+    },
+    "US-NM": {
+      "names": {
+        "sk": {
+          "name": "Nové Mexiko",
+          "aliases": []
+        },
+        "en": {
+          "name": "New Mexico",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-NM",
+        "NM"
+      ]
+    },
+    "US-OR": {
+      "names": {
+        "sk": {
+          "name": "Oregon",
+          "aliases": []
+        },
+        "en": {
+          "name": "Oregon",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-OR",
+        "OR"
+      ]
+    },
+    "US-UT": {
+      "names": {
+        "sk": {
+          "name": "Utah",
+          "aliases": []
+        },
+        "en": {
+          "name": "Utah",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-UT",
+        "UT"
+      ]
+    },
+    "US-WY": {
+      "names": {
+        "sk": {
+          "name": "Wyoming",
+          "aliases": []
+        },
+        "en": {
+          "name": "Wyoming",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-WY",
+        "WY"
+      ]
+    },
+    "US-AR": {
+      "names": {
+        "sk": {
+          "name": "Arkansas",
+          "aliases": []
+        },
+        "en": {
+          "name": "Arkansas",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-AR",
+        "AR"
+      ]
+    },
+    "US-IA": {
+      "names": {
+        "sk": {
+          "name": "Iowa",
+          "aliases": []
+        },
+        "en": {
+          "name": "Iowa",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-IA",
+        "IA"
+      ]
+    },
+    "US-KS": {
+      "names": {
+        "sk": {
+          "name": "Kansas",
+          "aliases": []
+        },
+        "en": {
+          "name": "Kansas",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-KS",
+        "KS"
+      ]
+    },
+    "US-MO": {
+      "names": {
+        "sk": {
+          "name": "Missouri",
+          "aliases": []
+        },
+        "en": {
+          "name": "Missouri",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-MO",
+        "MO"
+      ]
+    },
+    "US-NE": {
+      "names": {
+        "sk": {
+          "name": "Nebraska",
+          "aliases": []
+        },
+        "en": {
+          "name": "Nebraska",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-NE",
+        "NE"
+      ]
+    },
+    "US-OK": {
+      "names": {
+        "sk": {
+          "name": "Oklahoma",
+          "aliases": []
+        },
+        "en": {
+          "name": "Oklahoma",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-OK",
+        "OK"
+      ]
+    },
+    "US-SD": {
+      "names": {
+        "sk": {
+          "name": "Južná Dakota",
+          "aliases": []
+        },
+        "en": {
+          "name": "South Dakota",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-SD",
+        "SD"
+      ]
+    },
+    "US-LA": {
+      "names": {
+        "sk": {
+          "name": "Louisiana",
+          "aliases": []
+        },
+        "en": {
+          "name": "Louisiana",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-LA",
+        "LA"
+      ]
+    },
+    "US-TX": {
+      "names": {
+        "sk": {
+          "name": "Texas",
+          "aliases": []
+        },
+        "en": {
+          "name": "Texas",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-TX",
+        "TX"
+      ]
+    },
+    "US-CT": {
+      "names": {
+        "sk": {
+          "name": "Connecticut",
+          "aliases": []
+        },
+        "en": {
+          "name": "Connecticut",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-CT",
+        "CT"
+      ]
+    },
+    "US-MA": {
+      "names": {
+        "sk": {
+          "name": "Massachusetts",
+          "aliases": []
+        },
+        "en": {
+          "name": "Massachusetts",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-MA",
+        "MA"
+      ]
+    },
+    "US-NH": {
+      "names": {
+        "sk": {
+          "name": "New Hampshire",
+          "aliases": []
+        },
+        "en": {
+          "name": "New Hampshire",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-NH",
+        "NH"
+      ]
+    },
+    "US-RI": {
+      "names": {
+        "sk": {
+          "name": "Rhode Island",
+          "aliases": []
+        },
+        "en": {
+          "name": "Rhode Island",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-RI",
+        "RI"
+      ]
+    },
+    "US-VT": {
+      "names": {
+        "sk": {
+          "name": "Vermont",
+          "aliases": []
+        },
+        "en": {
+          "name": "Vermont",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-VT",
+        "VT"
+      ]
+    },
+    "US-AL": {
+      "names": {
+        "sk": {
+          "name": "Alabama",
+          "aliases": []
+        },
+        "en": {
+          "name": "Alabama",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-AL",
+        "AL"
+      ]
+    },
+    "US-FL": {
+      "names": {
+        "sk": {
+          "name": "Florida",
+          "aliases": []
+        },
+        "en": {
+          "name": "Florida",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-FL",
+        "FL"
+      ]
+    },
+    "US-GA": {
+      "names": {
+        "sk": {
+          "name": "Georgia",
+          "aliases": []
+        },
+        "en": {
+          "name": "Georgia",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-GA",
+        "GA"
+      ]
+    },
+    "US-MS": {
+      "names": {
+        "sk": {
+          "name": "Mississippi",
+          "aliases": []
+        },
+        "en": {
+          "name": "Mississippi",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-MS",
+        "MS"
+      ]
+    },
+    "US-SC": {
+      "names": {
+        "sk": {
+          "name": "Južná Karolína",
+          "aliases": []
+        },
+        "en": {
+          "name": "South Carolina",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-SC",
+        "SC"
+      ]
+    },
+    "US-IL": {
+      "names": {
+        "sk": {
+          "name": "Illinois",
+          "aliases": []
+        },
+        "en": {
+          "name": "Illinois",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-IL",
+        "IL"
+      ]
+    },
+    "US-IN": {
+      "names": {
+        "sk": {
+          "name": "Indiana",
+          "aliases": []
+        },
+        "en": {
+          "name": "Indiana",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-IN",
+        "IN"
+      ]
+    },
+    "US-KY": {
+      "names": {
+        "sk": {
+          "name": "Kentucky",
+          "aliases": []
+        },
+        "en": {
+          "name": "Kentucky",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-KY",
+        "KY"
+      ]
+    },
+    "US-NC": {
+      "names": {
+        "sk": {
+          "name": "Severná Karolína",
+          "aliases": []
+        },
+        "en": {
+          "name": "North Carolina",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-NC",
+        "NC"
+      ]
+    },
+    "US-OH": {
+      "names": {
+        "sk": {
+          "name": "Ohio",
+          "aliases": []
+        },
+        "en": {
+          "name": "Ohio",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-OH",
+        "OH"
+      ]
+    },
+    "US-TN": {
+      "names": {
+        "sk": {
+          "name": "Tennessee",
+          "aliases": []
+        },
+        "en": {
+          "name": "Tennessee",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-TN",
+        "TN"
+      ]
+    },
+    "US-VA": {
+      "names": {
+        "sk": {
+          "name": "Virgínia",
+          "aliases": []
+        },
+        "en": {
+          "name": "Virginia",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-VA",
+        "VA"
+      ]
+    },
+    "US-WI": {
+      "names": {
+        "sk": {
+          "name": "Wisconsin",
+          "aliases": []
+        },
+        "en": {
+          "name": "Wisconsin",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-WI",
+        "WI"
+      ]
+    },
+    "US-WV": {
+      "names": {
+        "sk": {
+          "name": "Západná Virgínia",
+          "aliases": []
+        },
+        "en": {
+          "name": "West Virginia",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-WV",
+        "WV"
+      ]
+    },
+    "US-DE": {
+      "names": {
+        "sk": {
+          "name": "Delaware",
+          "aliases": []
+        },
+        "en": {
+          "name": "Delaware",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-DE",
+        "DE"
+      ]
+    },
+    "US-MD": {
+      "names": {
+        "sk": {
+          "name": "Maryland",
+          "aliases": []
+        },
+        "en": {
+          "name": "Maryland",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-MD",
+        "MD"
+      ]
+    },
+    "US-NJ": {
+      "names": {
+        "sk": {
+          "name": "New Jersey",
+          "aliases": []
+        },
+        "en": {
+          "name": "New Jersey",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-NJ",
+        "NJ"
+      ]
+    },
+    "US-NY": {
+      "names": {
+        "sk": {
+          "name": "New York",
+          "aliases": [
+            "štát New York"
+          ]
+        },
+        "en": {
+          "name": "New York",
+          "aliases": [
+            "New York State"
+          ]
+        }
+      },
+      "codes": [
+        "US-NY",
+        "NY"
+      ]
+    },
+    "US-PA": {
+      "names": {
+        "sk": {
+          "name": "Pensylvánia",
+          "aliases": []
+        },
+        "en": {
+          "name": "Pennsylvania",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-PA",
+        "PA"
+      ]
+    },
+    "US-ME": {
+      "names": {
+        "sk": {
+          "name": "Maine",
+          "aliases": []
+        },
+        "en": {
+          "name": "Maine",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-ME",
+        "ME"
+      ]
+    },
+    "US-MI": {
+      "names": {
+        "sk": {
+          "name": "Michigan",
+          "aliases": []
+        },
+        "en": {
+          "name": "Michigan",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-MI",
+        "MI"
+      ]
+    },
+    "US-AK": {
+      "names": {
+        "sk": {
+          "name": "Aljaška",
+          "aliases": []
+        },
+        "en": {
+          "name": "Alaska",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "US-AK",
+        "AK"
+      ]
+    },
+    "GB-ENG": {
+      "names": {
+        "sk": {
+          "name": "Anglicko",
+          "aliases": []
+        },
+        "en": {
+          "name": "England",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "GB-ENG",
+        "ENG"
+      ]
+    },
+    "GB-SCT": {
+      "names": {
+        "sk": {
+          "name": "Škótsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Scotland",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "GB-SCT",
+        "SCO",
+        "SCT"
+      ]
+    },
+    "GB-WLS": {
+      "names": {
+        "sk": {
+          "name": "Wales",
+          "aliases": []
+        },
+        "en": {
+          "name": "Wales",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "GB-WLS",
+        "WAL",
+        "WLS"
+      ]
+    },
+    "GB-NIR": {
+      "names": {
+        "sk": {
+          "name": "Severné Írsko",
+          "aliases": []
+        },
+        "en": {
+          "name": "Northern Ireland",
+          "aliases": []
+        }
+      },
+      "codes": [
+        "GB-NIR",
+        "NIR"
+      ]
+    }
+  }
+}

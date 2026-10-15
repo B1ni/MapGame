@@ -67,6 +67,19 @@
           <p id="invitationHint" class="muted-copy" hidden></p>
           <label for="hostRegion">Mapa pre hru</label>
           <select id="hostRegion"></select>
+          <label for="hostGameMode">Herný režim</label>
+          <select id="hostGameMode">
+            <option value="classic">Klasická súťaž</option>
+            <option value="battle">Map Battle</option>
+          </select>
+          <div id="battleOptions" hidden>
+            <label for="hostBattleVariant">Map Battle variant</label>
+            <select id="hostBattleVariant">
+              <option value="normal">Normal</option>
+              <option value="hardcore">Hardcore</option>
+            </select>
+            <p class="muted-copy">Normal: štát získa prvý hráč. Hardcore: štáty možno kradnúť. Oba varianty končia časovým limitom alebo obsadením celej mapy. Rovnosť bodov znamená remízu.</p>
+          </div>
           <div class="option-row">
             <label for="hostMinutes">Časový limit</label>
             <div class="number-input"><input id="hostMinutes" type="number" min="1" max="120" value="5"><span>min</span></div>
@@ -133,6 +146,10 @@
       </div>
 
       <div id="inviteGameBanner" class="invite-game-banner" hidden></div>
+      <aside id="liveLeaderboardWrap" class="live-leaderboard" aria-labelledby="liveLeaderboardTitle" hidden>
+        <h2 id="liveLeaderboardTitle">Priebežné poradie</h2>
+        <ol id="liveLeaderboard" class="leaderboard"></ol>
+      </aside>
       <div class="map-card">
         <div class="map-caption">
           <span class="map-dot"></span><span id="mapHint">Slepá mapa</span>

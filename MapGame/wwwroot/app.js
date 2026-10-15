@@ -13,6 +13,9 @@ const state = {
   inviteRoom: ""
 };
 state.online = false;
+state.gameMode = "classic";
+state.battleRevision = -1;
+state.multiplayerFinished = false;
 
 const elements = Object.fromEntries([
   "homePanel", "lobbyPanel", "gamePanel", "endPanel", "playerName",
@@ -25,7 +28,8 @@ const elements = Object.fromEntries([
   "gameModeLabel", "gameTitle", "timerBlock", "timer", "livesBlock", "livesDisplay",
   "inviteGameBanner", "map", "mapHint", "guessForm", "guessInput", "guessFeedback",
   "zoomIn", "zoomOut", "zoomReset", "endGame",
-  "endTitle", "endSummary", "leaderboardWrap", "leaderboard", "newGame"
+  "endTitle", "endSummary", "leaderboardWrap", "leaderboard", "newGame",
+  "liveLeaderboardWrap", "liveLeaderboard", "hostGameMode", "battleOptions", "hostBattleVariant"
 ].map(id => [id, document.getElementById(id)]));
 
 let currentRegion = null;
@@ -129,10 +133,15 @@ function renderGame(regionId, mode, found = []) {
   currentMode = mode;
   solvedIds = new Set(found);
   elements.gameTitle.textContent = currentRegion.name;
-  elements.gameModeLabel.textContent = state.multiplayer ? "MULTIPLAYER · SÚŤAŽ O ČAS" : mode === "time" ? "HRA NA ČAS" : "HRA NA ŽIVOTY";
+  const battle = state.multiplayer && state.gameMode !== "classic";
+  elements.gameModeLabel.textContent = battle
+    ? `MAP BATTLE · ${state.gameMode === "battle-hardcore" ? "HARDCORE" : "NORMAL"}`
+    : state.multiplayer ? "MULTIPLAYER · SÚŤAŽ O ČAS" : mode === "time" ? "HRA NA ČAS" : "HRA NA ŽIVOTY";
   elements.timerBlock.hidden = mode !== "time";
   elements.livesBlock.hidden = mode !== "lives";
-  elements.mapHint.textContent = "Uhádnuté štáty sa vyfarbia nazeleno";
+  elements.liveLeaderboardWrap.hidden = !state.multiplayer;
+  elements.liveLeaderboard.replaceChildren();
+  elements.mapHint.textContent = battle ? "Spoločná mapa · farby vlastníkov sú v rebríčku" : "Uhádnuté štáty sa vyfarbia nazeleno";
   elements.endGame.disabled = false;
   elements.guessInput.disabled = false;
   elements.endGame.textContent = state.multiplayer && !state.host ? "Opustiť hru" : "Ukončiť hru";
@@ -236,6 +245,23 @@ function updateSolved(found) {
   for (const shape of elements.map.querySelectorAll("[data-id]")) {
     shape.classList.toggle("solved", solvedIds.has(shape.dataset.id));
   }
+}
+
+function updateMultiplayerProgress(message) {
+  if (state.gameMode === "classic") {
+    if (message.foundIds) updateSolved(message.foundIds);
+  } else {
+    if (message.revision < state.battleRevision) return;
+    state.battleRevision = message.revision;
+    const ownership = new Map(message.ownership.map(country => [country.id, country.color]));
+    for (const shape of elements.map.querySelectorAll("[data-id]")) {
+      shape.classList.toggle("solved", false);
+      const color = ownership.get(shape.dataset.id);
+      if (color) shape.style.fill = color;
+      else shape.style.removeProperty("fill");
+    }
+  }
+  if (message.leaderboard) renderLeaderboard(elements.liveLeaderboard, message.leaderboard);
 }
 
 function finishSingleGame(game) {
@@ -518,7 +544,11 @@ function handleMultiplayerMessage(message) {
   }
   if (message.type === "game-started") {
     clearInterval(state.syncTimer);
+    state.gameMode = message.gameMode ?? "classic";
+    state.battleRevision = -1;
+    state.multiplayerFinished = false;
     renderGame(message.regionId, "time");
+    updateMultiplayerProgress(message);
     recordDiagnostic("game-rendered", { region: message.regionId, shapes: elements.map.children.length });
     elements.timer.textContent = formatTime(message.remainingSeconds);
     setScreen("game");
@@ -527,16 +557,19 @@ function handleMultiplayerMessage(message) {
     return;
   }
   if (message.type === "guess-result") {
-    if (message.foundIds) updateSolved(message.foundIds);
+    if (state.multiplayerFinished) return;
+    if (message.leaderboard || message.foundIds) updateMultiplayerProgress(message);
     showFeedback(message.message, message.outcome === "correct" ? "success" : "error");
     return;
   }
   if (message.type === "tick") {
+    if (state.multiplayerFinished) return;
     elements.timer.textContent = formatTime(message.remainingSeconds);
-    updateSolved(message.foundIds);
+    updateMultiplayerProgress(message);
     return;
   }
   if (message.type === "finished") {
+    if (state.gameMode !== "classic") updateMultiplayerProgress(message);
     finishMultiplayer(message.results, message.reason);
   }
 }
@@ -610,6 +643,7 @@ function startMultiplayerGame() {
   sendMultiplayer({
     type: "start",
     regionId: elements.hostRegion.value,
+    gameMode: elements.hostGameMode.value === "battle" ? `battle-${elements.hostBattleVariant.value}` : "classic",
     timeLimitSeconds: Number(elements.hostMinutes.value) * 60
   });
 }
@@ -617,25 +651,40 @@ function startMultiplayerGame() {
 function finishMultiplayer(results, reason) {
   clearInterval(state.syncTimer);
   state.syncTimer = null;
+  state.multiplayerFinished = true;
   const ownName = state.playerName;
   const ownResult = results.find(result => result.name === ownName);
-  elements.endTitle.textContent = ownResult?.place === 1 ? "Vyhral si!" : "Hra sa skončila";
+  const battle = state.gameMode !== "classic";
+  const tiedWinner = ownResult?.place === 1 && results.filter(result => result.place === 1).length > 1;
+  elements.endTitle.textContent = tiedWinner ? "Remíza!" : ownResult?.place === 1 ? "Vyhral si!" : "Hra sa skončila";
   elements.endSummary.textContent = reason === "host-ended"
     ? "Hostiteľ predčasne ukončil hru. Výsledky zobrazujú uhádnuté štáty do tohto okamihu."
-    : "Rozhoduje počet uhádnutých štátov; pri zhode čas, za ktorý ich hráč uhádol.";
-  elements.leaderboard.replaceChildren();
+    : battle ? "Map Battle: rozhoduje počet vlastnených štátov. Pri rovnosti bodov je remíza."
+      : "Rozhoduje počet uhádnutých štátov; pri zhode čas, za ktorý ich hráč uhádol.";
+  renderLeaderboard(elements.leaderboard, results);
+  elements.leaderboardWrap.hidden = false;
+  setScreen("end");
+}
+
+function renderLeaderboard(list, results) {
+  list.replaceChildren();
   for (const result of results) {
     const item = document.createElement("li");
     const label = document.createElement("span");
     label.textContent = `${result.place}. ${result.name}`;
+    if (result.color) {
+      const swatch = document.createElement("span");
+      swatch.className = "player-color";
+      swatch.style.backgroundColor = result.color;
+      swatch.setAttribute("aria-hidden", "true");
+      label.prepend(swatch);
+    }
     const score = document.createElement("strong");
     const elapsed = result.seconds === null ? "" : ` · ${formatTime(result.seconds)}`;
     score.textContent = `${result.guessedCount} / ${result.totalCount}${elapsed}`;
     item.append(label, score);
-    elements.leaderboard.append(item);
+    list.append(item);
   }
-  elements.leaderboardWrap.hidden = false;
-  setScreen("end");
 }
 
 function exitGame() {
@@ -689,6 +738,9 @@ function returnHome() {
   state.singlePollTimer = null;
   state.multiplayer = false;
   state.singleGame = null;
+  state.gameMode = "classic";
+  state.battleRevision = -1;
+  state.multiplayerFinished = false;
   const socket = state.socket;
   state.socket = null;
   if (socket && socket.readyState < WebSocket.CLOSING) socket.close();
@@ -706,6 +758,9 @@ elements.singleMode.addEventListener("change", () => {
   const timeMode = elements.singleMode.value === "time";
   elements.singleTimeOptions.hidden = !timeMode;
   elements.singleLivesOptions.hidden = timeMode;
+});
+elements.hostGameMode.addEventListener("change", () => {
+  elements.battleOptions.hidden = elements.hostGameMode.value !== "battle";
 });
 elements.startSingle.addEventListener("click", startSingleGame);
 elements.createRoom.addEventListener("click", () => connectMultiplayer("create"));

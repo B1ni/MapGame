@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/Logs/
+Logs/
+Balik-na-zdielanie/
+MapGame-LAN-Windows.zip
+/FullGame/
+.vs/
+.vscode/
+*.user

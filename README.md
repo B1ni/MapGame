@@ -6,7 +6,7 @@ Jednoduchá zemepisná hra v slovenčine. Po nasadení na Render Free beží ver
 
 Zdrojový kód je pripravený, **nie je však automaticky nahraný ani nasadený**. Potrebuješ vlastný GitHub a Render účet. Docker na svojom PC nepotrebuješ: obraz zostaví Render.
 
-1. Vytvor na GitHube repozitár a nahraj zdroje z tohto priečinka. V koreňovom priečinku repozitára musia byť `Dockerfile`, `.dockerignore`, `render.yaml` a priečinok `MapGame` s projektom a jeho `wwwroot`. Nahraj aj testy, riešenie a README. Nezdieľaj `Logs`, `bin`, `obj`, `Balik-na-zdielanie` ani Windows ZIP (pri Git nahrávaní ich vylučuje `.gitignore`; pri ručnom nahrávaní ich vynechaj sám).
+1. Vytvor na GitHube repozitár a nahraj zdroje z tohto priečinka. V koreňovom priečinku repozitára musia byť `Dockerfile`, `.dockerignore`, `render.yaml` a priečinok `MapGame` s projektom a jeho `wwwroot`. Nahraj aj testy, riešenie a README. Nezdieľaj `FullGame`, `Logs`, `bin`, `obj`, `Balik-na-zdielanie` ani Windows ZIP (pri Git nahrávaní ich vylučuje `.gitignore`; pri ručnom nahrávaní ich vynechaj sám).
 2. Na [Render Dashboard](https://dashboard.render.com/) sa prihlás a zvoľ **New → Web Service → Git Provider**. Pripoj GitHub a vyber svoj repozitár.
 3. Zvoľ región **Frankfurt**, jazyk/runtime **Docker**, Dockerfile `./Dockerfile`, kontext zostavenia koreň repozitára (`.`); **Root Directory nechaj prázdny**. Nezadávaj vlastný Build Command ani Docker Command: zostavenie a štart určuje Dockerfile.
 4. Vyber výslovne **Free** (nie Starter ani iný platený plán). V Advanced nastav **Health Check Path** na `/health`. Environment:
@@ -71,7 +71,9 @@ Spusti v koreňovom priečinku repozitára:
 .\Publish-Windows.ps1
 ```
 
-Výsledná aplikácia je v priečinku `MapGame\bin\Release\net10.0\win-x64\publish`. Spusti `MapGame.exe` priamo z tohto priečinka; po pripravení servera sa automaticky otvorí `http://localhost:5080` v predvolenom prehliadači. Konzolové okno zobrazuje živé logy s časmi udalostí a musí zostať otvorené počas hry; jeho zatvorením sa server ukončí. Rovnaké udalosti sa ukladajú do priečinka `Logs`. Ak sa prehliadač nepodarí spustiť, konzola vypíše chybu a adresu na ručné otvorenie. Pre vývoj alebo automatizáciu možno automatické otvorenie vypnúť argumentom `--no-browser`.
+Výsledná aplikácia je v priečinku **`FullGame`** v koreňovom priečinku repozitára. Skript sem pri každom spustení publikuje aktuálnu samostatnú Windows x64 verziu vrátane .NET runtime, máp, webového rozhrania, README a diagnostických/testovacích skriptov. Pred aktualizovaním balíka zatvor jeho bežiacu hru. `FullGame` je v `.gitignore` a nie je súčasťou Git commitu ani Render obrazu; po zmene zdrojov ho obnov spustením `Publish-Windows.ps1`.
+
+**Pre hráča:** skopíruj celý `FullGame` a spusti v ňom `MapGame.exe`. Na singleplayer netreba internet, Render ani inštaláciu .NET; potrebuješ iba Windows x64 a prehliadač. Po pripravení lokálneho servera sa automaticky otvorí `http://localhost:5080` v predvolenom prehliadači. Konzolové okno zobrazuje živé logy s časmi udalostí a musí zostať otvorené počas hry; jeho zatvorením sa server ukončí. Rovnaké udalosti sa ukladajú do priečinka `Logs`. Ak sa prehliadač nepodarí spustiť, konzola vypíše chybu a adresu na ručné otvorenie. Pre vývoj alebo automatizáciu možno automatické otvorenie vypnúť argumentom `--no-browser`.
 
 Pri kopírovaní alebo zdieľaní zachovaj celý priečinok vrátane `wwwroot` a `Data`. Na počítači hráča netreba inštalovať .NET. Hráči bez stiahnutej hry môžu hrať v prehliadači cez pozývací odkaz; hráči so stiahnutou hrou sa pripájajú z aplikácie pomocou adresy hostiteľa a ID.
 
@@ -79,9 +81,27 @@ Pri kopírovaní alebo zdieľaní zachovaj celý priečinok vrátane `wwwroot` a
 
 - **Na čas:** vyber mapu alebo náhodný región a limit od 1 do 120 minút.
 - **Na životy:** vyber mapu alebo náhodný región a 1 až 5 životov. Nesprávny alebo opakovaný tip odoberie život.
-- **Multiplayer:** hostiteľ zvolí mapu a časový limit. Hráči súťažia o najvyšší počet uhádnutých štátov; pri zhode rozhoduje čas. Skóre sa ukáže až po skončení hry.
+- **Multiplayer:** hostiteľ zvolí mapu a časový limit. V online aj LAN hre je počas celého zápasu nad mapou priebežný rebríček všetkých hráčov s počtom uhádnutých štátov, obnovovaný každú sekundu. Poradie určuje počet odpovedí a pri zhode čas dosiahnutia skóre; rovnaké pravidlá platia pre konečné výsledky. Každý hráč na svojej mape naďalej vidí iba vlastné uhádnuté štáty.
+- **Map Battle (online aj LAN multiplayer):** hostiteľ zvolí **Herný režim → Map Battle** a variant **Normal** alebo **Hardcore** ešte pred spustením zápasu. Každý hráč má vlastnú farbu zobrazenú pri mene v rebríčku; všetci vidia tú istú mapu s farbami aktuálnych vlastníkov. Každý vlastnený štát je jeden bod. V **Normal** štát získa prvý hráč a ďalší ho už obsadiť nemôžu. V **Hardcore** správna odpoveď ukradne súperov štát: súper stratí bod a nový vlastník ho získa. Štát možno kradnúť opakovane; vlastný štát ani jeho alias nepridá ďalší bod.
 
-Počas hry sa počet uhádnutých štátov nezobrazuje. Správne uhádnuté štáty sa na mape zafarbia nazeleno. Mapa zaberá väčšiu časť obrazovky a dá sa posúvať potiahnutím; priblíženie a oddialenie funguje kolieskom myši alebo tlačidlami +/−. Tlačidlo s percentami vráti pôvodný pohľad.
+Map Battle skončí **uplynutím času alebo ihneď po obsadení posledného voľného štátu**, aj v Hardcore (potom už kradnutie nepokračuje). Vyhrá najvyšší počet vlastnených štátov; rovnosť bodov znamená remízu, čas nerozhoduje. Hostiteľ môže hru ukončiť predčasne. Odídenému/odpojenému hosťovi zostávajú jeho štáty a skóre; v Hardcore ich možno ukradnúť, v Normal zostávajú obsadené. Odpojenie hostiteľa zatvorí hru rovnako ako v klasickej súťaži. Klasická súťaž a singleplayer zachovávajú pôvodné pravidlá.
+
+V singleplayeri sa počas hry počet uhádnutých štátov nezobrazuje. Správne uhádnuté štáty sa na mape zafarbia nazeleno. Mapa zaberá väčšiu časť obrazovky a dá sa posúvať potiahnutím; priblíženie a oddialenie funguje kolieskom myši alebo tlačidlami +/−. Tlačidlo s percentami vráti pôvodný pohľad.
+
+### Názvy a odpovede (slovenčina aj angličtina)
+
+Všetky krajiny aj 50 štátov USA majú slovenský a anglický názov. **Oba jazyky prijíma hra súčasne**, bez prepínania a bez nutnosti diakritiky; rozhranie zostáva slovenské. Prijímajú sa aj ISO alpha-2/alpha-3 kódy krajín (napr. `SK`, `SVK`), americké poštové skratky (`CA`, `NY`) a vybrané bežné alternatívy (`Turkey`, `UAE`, `JAR`). Skratky sa vyhodnocujú iba v zvolenej mape. Nejednoznačné aliasy sa neprijímajú (napr. samotné slovenské `Kongo`). Iný jazyk alebo alias už uhádnutej krajiny je opakovaný tip, nie ďalší bod; v režime na životy odoberie život.
+
+V Európe sú namiesto jedného Spojeného kráľovstva **štyri samostatné odpovede s vlastnými hranicami**:
+
+| Slovensky | English | Bežný kód | ISO 3166-2 / stabilné ID |
+| --- | --- | --- | --- |
+| Anglicko | England | ENG | GB-ENG |
+| Škótsko | Scotland | SCO (aj SCT) | GB-SCT |
+| Wales | Wales | WAL (aj WLS) | GB-WLS |
+| Severné Írsko | Northern Ireland | NIR | GB-NIR |
+
+`ENG`, `SCO`, `WAL`, `NIR` sú zámerne bežné/športové skratky, nie ISO kódy samostatných suverénnych štátov. `UK`, `GB`, `GBR`, `Británia`, `Great Britain` ani `United Kingdom` neuhádnu žiadnu z nich. `Anglicko` vyfarbí iba Anglicko, nie celé Spojené kráľovstvo. Európa má 48 odpovedí; ostatné mapy zostávajú na 46 (Ázia), 22 (Severná Amerika), 12 (Južná Amerika), 54 (Afrika) a 50 (USA).
 
 Tlačidlo **Ukončiť hru** umožní predčasne skončiť a zobraziť výsledok. V multiplayeri môže zápas pre všetkých ukončiť hostiteľ; ostatní hráči môžu iba opustiť zápas.
 
@@ -109,6 +129,10 @@ node --test MapGame.Tests\MultiplayerClientTests.cjs MapGame.Tests\BrowserDiagno
 ```
 
 Testy overia pravidlá a skryté skóre, troch WebSocket hráčov, limity a expiráciu, súborové logovanie aj skutočný štart aplikácie v internetovom režime (host/origin kontroly, nedôveryhodné forwarded hlavičky, statické dáta, veľkosť HTTP tela a WebSocket lobby). Node testy pokrývajú pôvodné LAN pozvánky aj online WSS/HTTPS pozvánky a export diagnostiky. Test internetového servera lokálne simuluje TLS termináciu Render; nenahrádza verejný test po deployi.
+
+Katalógové testy navyše kontrolujú všetkých 232 odpovedí, oba jazyky, kódy, aliasy a duplicity, presnú zhodu verejnej/serverovej geometrie a neprístupnosť súboru s odpoveďami. Geografické testy overujú samostatné britské hranice, známe vnútrozemské body, ostrovy, spoločné hraničné úseky (aj s Írskom) a neprítomnosť plošných prekryvov.
+
+Voliteľný test v **skutočnom Chromium prehliadači** (Node 22+, bez npm závislostí): spusti lokálny server a samostatný Chrome/Edge s `--remote-debugging-port=9229` a `--user-data-dir=<nový priečinok v projekte>` (nie svoj bežný profil); potom `node MapGame.Tests\BrowserMapSmoke.cjs`. Premenné `MAPGAME_URL` a `MAPGAME_CDP` môžu zmeniť predvolené `http://localhost:5080` a `http://127.0.0.1:9229`. Test otvorí a zatvorí vlastné karty, overí štyri rôzne SVG obrysy, singleplayer aj multiplayer pozvánku, jednotlivé vyfarbenie, aliasy, odmietnutie UK, súkromné klasické mapy aj spoločné Battle farby, kradnutie, remízu a koniec po obsadení celej mapy. Po teste zatvor iba tento testovací prehliadač a odstráň jeho profil; debugging port nevystavuj do internetu.
 
 Ak máš Docker, môžeš navyše zostaviť a spustiť rovnaký obraz:
 
@@ -138,5 +162,15 @@ Skript nemení firewall ani sieťové nastavenia. Zapíše TCP/HTTP test a loká
 ## Mapové dáta a licencie
 
 Hranice štátov pochádzajú z [Natural Earth](https://www.naturalearthdata.com/) a sú vo verejnej doméne. Slovenské názvy a metadáta krajín pochádzajú z [mledoze/countries](https://github.com/mledoze/countries) a databáza je šírená pod [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/). Licenčné texty a zdroje sú súčasťou aplikácie v `MapGame\wwwroot\data`.
+
+Nové hranice štyroch krajín Spojeného kráľovstva sú presné geometrie z **Natural Earth v5.1.2, Admin 0 – Map Subunits, 1:50m** (public domain). Nejde o obdĺžniky ani štyri kópie obrysu GBR. Zdrojové identifikátory, URL a SHA-256 sú v `NATURAL-EARTH-SOURCES.txt`. Severoírska hranica používa rovnaké súradnice ako existujúce Írsko; všetkých 228 ostatných geometrií ostalo nezmenených. Hranice sú kartograficky generalizované, nie geodetické.
+
+### Úprava katalógu bez súradníc
+
+- `MapGame\Data\country-names.json`: serverový katalóg podľa stabilných ID; `regions` a `features` obsahujú `names.sk` / `names.en` s `name` a voliteľnými `aliases`, `features` navyše `codes`. Tu upravuj názvy, skratky a aliasy bez otvárania súradníc. Obsah je vložený do serverovej assembly, nie sprístupnený ako statický súbor.
+- `MapGame\Data\maps.json`: iba ID regiónov/prvkov a geometria. Loader overí presnú zhodu ID s katalógom a prítomnosť oboch jazykov; chýbajúci alebo osirelý záznam zastaví načítanie namiesto tichého vynechania odpovede.
+- `GameRegion.GetName("sk"/"en")` a `MapFeature.GetName("sk"/"en")` poskytujú lokalizovaný zobrazovaný názov (nepodporovaný jazyk sa vráti na slovenčinu). Singleplayer aj multiplayer používajú jeden index všetkých jazykov s odfiltrovaním nejednoznačných aliasov.
+- `MapGame\wwwroot\data\map-shapes.json`: verejná geometria. Po zmene geometrie alebo názvu regiónu ju obnov štandardným Pythonom: `python tools\refresh-map-shapes.py`. Prepínač `--import-uk` opätovne stiahne a overí pripnutý Natural Earth zdroj a prevezme iba štyri britské geometrie.
+- Po úprave dát treba server znovu zostaviť/nasadiť. Pre Render commitni a pushni zdroje z tohto repozitára (vrátane oboch súborov v `Data`) na vetvu sledovanú Renderom; pri zapnutom Auto-Deploy sa nasadia automaticky. Lokálny balík obnov cez `Publish-Windows.ps1`; `FullGame` necommituj. Žiadne tajomstvá ani ďalšia služba nie sú potrebné.
 
 Mapa zobrazená v prehliadači obsahuje iba geometriu a identifikátory. Odpovede a aliasy zostávajú v serverovej časti hry.
