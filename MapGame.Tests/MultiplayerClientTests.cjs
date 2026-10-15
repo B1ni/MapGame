@@ -6,6 +6,7 @@ const vm = require("node:vm");
 
 function client() {
   const elements = new Map();
+  const windowListeners = {};
   const element = id => {
     if (!elements.has(id)) elements.set(id, {
       value: "", textContent: "", hidden: id !== "homePanel", disabled: false,
@@ -39,14 +40,24 @@ function client() {
     console, URL, URLSearchParams, WebSocket: Socket,
     location: { origin: "http://localhost:5080", hostname: "localhost", search: "" },
     document: { getElementById: element, createElement: () => element(`new-${elements.size}`) },
-    window: { addEventListener() {} },
+    window: { addEventListener(type, handler) { windowListeners[type] = handler; } },
     fetch: async () => ({ ok: true, json: async () => ({ regions: [] }) }),
     setTimeout: () => 1, clearTimeout() {}, setInterval: () => 1, clearInterval() {}
   });
   const script = fs.readFileSync(path.join(__dirname, "..", "MapGame", "wwwroot", "app.js"), "utf8");
   vm.runInContext(script.replace(/\binitialize\(\);\s*$/, ""), context);
-  return { element, Socket, run: script => vm.runInContext(script, context) };
+  return { element, Socket, windowListeners, run: script => vm.runInContext(script, context) };
 }
+
+test("restored Map Battle selection shows variants on pageshow without a change event", () => {
+  const c = client();
+  c.element("hostGameMode").value = "battle";
+  c.windowListeners.pageshow();
+  assert.equal(c.element("battleOptions").hidden, false);
+  c.element("hostGameMode").value = "classic";
+  c.windowListeners.pageshow();
+  assert.equal(c.element("battleOptions").hidden, true);
+});
 
 test("connectMultiplayer requires a player's own name", () => {
   const c = client();

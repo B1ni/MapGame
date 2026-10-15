@@ -82,6 +82,13 @@ public sealed class HostingTests
             var page = await client.GetAsync("/");
             Assert.Equal(HttpStatusCode.OK, page.StatusCode);
             Assert.True(page.Headers.Contains("Strict-Transport-Security"));
+            Assert.True(page.Headers.CacheControl?.NoCache);
+            foreach (var asset in new[] { "/app.js?v=battle-options-2", "/styles.css?v=battle-options-2", "/diagnostics.js?v=battle-options-2" })
+            {
+                using var response = await client.GetAsync(asset);
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.True(response.Headers.CacheControl?.NoCache);
+            }
             Assert.Contains("lanJoinOptions", await page.Content.ReadAsStringAsync());
             Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/data/map-shapes.json")).StatusCode);
             Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/data/country-names.json")).StatusCode);

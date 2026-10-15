@@ -34,6 +34,8 @@ Zdrojový kód je pripravený, **nie je však automaticky nahraný ani nasadený
 
 ### Hosting a diagnostika
 
+HTML, JavaScript a CSS vyžadujú pred opätovným použitím overenie aktuálnosti (`Cache-Control: no-cache`). Ak po nasadení vidíš staré ovládanie, obnov stránku cez Ctrl+F5. Výber Normal/Hardcore sa zobrazuje po zvolení Map Battle aj pri obnovení predchádzajúcej voľby prehliadačom.
+
 Render ukončuje TLS pred kontajnerom; kontajner počúva na HTTP `0.0.0.0:$PORT`. Aplikácia overí host aj presný HTTPS WebSocket origin podľa konfigurácie, **nedôveruje ľubovoľným `X-Forwarded-*` hlavičkám** a nepovoľuje na internete localhost/LAN klientské originy. `/health` je verejná jednoduchá sonda bez herných dát, dostupná aj s interným hostom zdravotnej kontroly.
 
 Na Render sú technické logy v **Dashboard → služba → Logs** (stdout/stderr). Súborové logy sú v Docker režime vypnuté; ak ich zapneš, sú len na efemérnom disku a pri reštarte/deployi sa stratia. Žiadne hráčske mená, tipy ani odpovede sa do serverových logov nezapisujú. Server neukladá voľný text klientských diagnostických udalostí; plný klientský technický report zostáva dostupný cez **Stiahnuť diagnostiku pripojenia** v prehliadači.

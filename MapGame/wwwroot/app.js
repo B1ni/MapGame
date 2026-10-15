@@ -759,9 +759,12 @@ elements.singleMode.addEventListener("change", () => {
   elements.singleTimeOptions.hidden = !timeMode;
   elements.singleLivesOptions.hidden = timeMode;
 });
-elements.hostGameMode.addEventListener("change", () => {
+function updateBattleOptions() {
   elements.battleOptions.hidden = elements.hostGameMode.value !== "battle";
-});
+}
+elements.hostGameMode.addEventListener("change", updateBattleOptions);
+window.addEventListener("pageshow", updateBattleOptions);
+updateBattleOptions();
 elements.startSingle.addEventListener("click", startSingleGame);
 elements.createRoom.addEventListener("click", () => connectMultiplayer("create"));
 elements.joinRoom.addEventListener("click", () => connectMultiplayer("join"));
