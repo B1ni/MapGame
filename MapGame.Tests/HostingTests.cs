@@ -83,12 +83,15 @@ public sealed class HostingTests
             Assert.Equal(HttpStatusCode.OK, page.StatusCode);
             Assert.True(page.Headers.Contains("Strict-Transport-Security"));
             Assert.True(page.Headers.CacheControl?.NoCache);
-            foreach (var asset in new[] { "/app.js?v=battle-options-2", "/styles.css?v=battle-options-2", "/diagnostics.js?v=battle-options-2" })
+            foreach (var asset in new[] { "/app.js?v=lobby-3", "/styles.css?v=lobby-3", "/diagnostics.js?v=lobby-3", "/data/map-shapes.json" })
             {
                 using var response = await client.GetAsync(asset);
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 Assert.True(response.Headers.CacheControl?.NoCache);
             }
+            using var icon = await client.GetAsync("/favicon.svg");
+            Assert.Equal(HttpStatusCode.OK, icon.StatusCode);
+            Assert.Equal("image/svg+xml", icon.Content.Headers.ContentType?.MediaType);
             Assert.Contains("lanJoinOptions", await page.Content.ReadAsStringAsync());
             Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/data/map-shapes.json")).StatusCode);
             Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/data/country-names.json")).StatusCode);

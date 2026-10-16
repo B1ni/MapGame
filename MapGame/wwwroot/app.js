@@ -16,6 +16,8 @@ state.online = false;
 state.gameMode = "classic";
 state.battleRevision = -1;
 state.multiplayerFinished = false;
+state.round = 0;
+state.historyKey = "";
 
 const elements = Object.fromEntries([
   "homePanel", "lobbyPanel", "gamePanel", "endPanel", "playerName",
@@ -29,7 +31,9 @@ const elements = Object.fromEntries([
   "inviteGameBanner", "map", "mapHint", "guessForm", "guessInput", "guessFeedback",
   "zoomIn", "zoomOut", "zoomReset", "endGame",
   "endTitle", "endSummary", "leaderboardWrap", "leaderboard", "newGame",
-  "liveLeaderboardWrap", "liveLeaderboard", "hostGameMode", "battleOptions", "hostBattleVariant"
+  "liveLeaderboardWrap", "liveLeaderboard", "hostGameMode", "battleOptions", "hostBattleVariant",
+  "lobbySettingsSummary", "battleTotal", "guessHistoryWrap", "guessHistory",
+  "returnLobby", "resultsWaiting", "endError"
 ].map(id => [id, document.getElementById(id)]));
 
 let currentRegion = null;
@@ -46,7 +50,7 @@ async function initialize() {
     if (!hostingResponse.ok) throw new Error("Nastavenie servera sa nepodarilo načítať. Obnov stránku.");
     const hosting = await hostingResponse.json();
     configureHosting(hosting.mode);
-    const response = await fetch("/data/map-shapes.json");
+    const response = await fetch("/data/map-shapes.json", { cache: "no-cache" });
     recordDiagnostic("maps-http", { status: response.status });
     if (!response.ok) throw new Error("Mapy sa nepodarilo načítať.");
     const data = await response.json();
@@ -141,6 +145,15 @@ function renderGame(regionId, mode, found = []) {
   elements.livesBlock.hidden = mode !== "lives";
   elements.liveLeaderboardWrap.hidden = !state.multiplayer;
   elements.liveLeaderboard.replaceChildren();
+  elements.battleTotal.hidden = !battle;
+  elements.battleTotal.textContent = "";
+  elements.guessHistoryWrap.hidden = battle && state.gameMode === "battle-hardcore";
+  elements.guessHistory.replaceChildren();
+  state.historyKey = "";
+  elements.returnLobby.hidden = true;
+  elements.resultsWaiting.hidden = true;
+  elements.newGame.hidden = false;
+  showError(elements.endError, "");
   elements.mapHint.textContent = battle ? "Spoločná mapa · farby vlastníkov sú v rebríčku" : "Uhádnuté štáty sa vyfarbia nazeleno";
   elements.endGame.disabled = false;
   elements.guessInput.disabled = false;
@@ -262,6 +275,29 @@ function updateMultiplayerProgress(message) {
     }
   }
   if (message.leaderboard) renderLeaderboard(elements.liveLeaderboard, message.leaderboard);
+  if (state.gameMode !== "classic" && message.claimedCount !== undefined)
+    elements.battleTotal.textContent = `Obsadené štáty: ${message.claimedCount} / ${message.totalCount}`;
+  renderGuessHistory(message.history);
+}
+
+function renderGuessHistory(history) {
+  if (state.multiplayer && state.gameMode === "battle-hardcore") {
+    elements.guessHistoryWrap.hidden = true;
+    elements.guessHistory.replaceChildren();
+    return;
+  }
+  if (!history) return;
+  const key = JSON.stringify(history);
+  if (state.historyKey === key) return;
+  state.historyKey = key;
+  elements.guessHistoryWrap.hidden = false;
+  elements.guessHistory.replaceChildren();
+  for (const entry of history) {
+    const item = document.createElement("li");
+    item.textContent = typeof entry === "string" ? entry
+      : state.gameMode === "battle-normal" ? `${entry.name} · ${entry.player}` : entry.name;
+    elements.guessHistory.append(item);
+  }
 }
 
 function finishSingleGame(game) {
@@ -285,6 +321,7 @@ function finishSingleGame(game) {
 
 function applySingleGame(game) {
   updateSolved(game.foundIds);
+  renderGuessHistory(game.history);
   if (game.remainingSeconds !== null) elements.timer.textContent = formatTime(game.remainingSeconds);
   if (game.livesRemaining !== null) {
     elements.livesDisplay.textContent = "♥".repeat(game.livesRemaining) + "♡".repeat(5 - game.livesRemaining);
@@ -310,6 +347,7 @@ async function startSingleGame() {
     const game = await response.json();
     if (!response.ok) throw new Error(game.error || "Hru sa nepodarilo spustiť.");
     state.multiplayer = false;
+    state.gameMode = "classic";
     state.singleGame = game;
     renderGame(game.regionId, game.mode, game.foundIds);
     applySingleGame(game);
@@ -493,7 +531,13 @@ function connectMultiplayer(action) {
     elements.joinRoom.disabled = false;
     elements.createRoom.disabled = false;
     clearInterval(state.syncTimer);
-    if (!elements.endPanel.hidden) return;
+    if (!elements.endPanel.hidden) {
+      elements.returnLobby.hidden = true;
+      elements.resultsWaiting.hidden = true;
+      elements.newGame.hidden = false;
+      showError(elements.endError, "Spojenie sa prerušilo. Na ďalšiu hru sa pripoj znova.");
+      return;
+    }
     if (!joined) {
       returnHome();
       showError(elements.multiplayerError, state.online
@@ -520,29 +564,58 @@ function showDisconnected(message) {
 }
 
 function handleMultiplayerMessage(message) {
+  if (message.round !== undefined && message.round < state.round) return;
   if (message.type === "room-closed") {
     showDisconnected(message.message);
     state.socket?.close();
     return;
   }
   if (message.type === "error") {
-    if (!elements.gamePanel.hidden) showFeedback(message.message, "error");
+    if (!elements.endPanel.hidden) showError(elements.endError, message.message);
+    else if (!elements.gamePanel.hidden) showFeedback(message.message, "error");
     else showError(elements.lobbyError, message.message);
     return;
   }
   if (message.type === "lobby-update") {
+    const firstLobby = !state.roomCode;
+    state.round = message.round ?? state.round;
     state.roomCode = message.roomCode;
     state.host = message.isHost;
     elements.roomCodeDisplay.textContent = message.roomCode;
     elements.hostStartOptions.hidden = !message.isHost || message.status !== "lobby";
     elements.lobbyStatus.textContent = message.status === "lobby" ? "Čaká sa na spustenie hry." : "Hra už prebieha.";
     renderPlayerList(message.players);
+    if (message.settings) {
+      const settings = message.settings;
+      const modeName = settings.gameMode === "battle-normal" ? "Map Battle · Normal"
+        : settings.gameMode === "battle-hardcore" ? "Map Battle · Hardcore" : "Klasická súťaž";
+      const regionName = settings.regionId === "random" ? "Náhodná mapa" : regions.get(settings.regionId)?.name;
+      elements.lobbySettingsSummary.textContent = `${modeName} · ${regionName} · ${settings.timeLimitSeconds / 60} min`;
+      if (!message.isHost || firstLobby || message.returned) {
+        elements.hostRegion.value = settings.regionId;
+        elements.hostGameMode.value = settings.gameMode === "classic" ? "classic" : "battle";
+        elements.hostBattleVariant.value = settings.gameMode === "battle-hardcore" ? "hardcore" : "normal";
+        elements.hostMinutes.value = settings.timeLimitSeconds / 60;
+      }
+      updateBattleOptions();
+    }
+    if (message.returned && message.status === "lobby") {
+      clearInterval(state.syncTimer);
+      state.syncTimer = null;
+      state.multiplayerFinished = true;
+      state.battleRevision = -1;
+      elements.guessHistory.replaceChildren();
+      elements.guessHistoryWrap.hidden = true;
+      showError(elements.lobbyError, "");
+      setScreen("lobby");
+    }
     if (message.isHost && message.status === "lobby") prepareInvite(message.roomCode);
     if (message.status === "lobby" && !state.syncTimer)
       state.syncTimer = setInterval(() => sendMultiplayer({ type: "sync" }), 30000);
     return;
   }
   if (message.type === "game-started") {
+    state.round = message.round ?? state.round;
     clearInterval(state.syncTimer);
     state.gameMode = message.gameMode ?? "classic";
     state.battleRevision = -1;
@@ -569,7 +642,7 @@ function handleMultiplayerMessage(message) {
     return;
   }
   if (message.type === "finished") {
-    if (state.gameMode !== "classic") updateMultiplayerProgress(message);
+    updateMultiplayerProgress(message);
     finishMultiplayer(message.results, message.reason);
   }
 }
@@ -648,9 +721,19 @@ function startMultiplayerGame() {
   });
 }
 
+function publishLobbySettings() {
+  if (!state.host || elements.lobbyPanel.hidden) return;
+  showError(elements.lobbyError, "");
+  sendMultiplayer({
+    type: "configure", regionId: elements.hostRegion.value,
+    gameMode: elements.hostGameMode.value === "battle" ? `battle-${elements.hostBattleVariant.value}` : "classic",
+    timeLimitSeconds: Number(elements.hostMinutes.value) * 60
+  });
+}
+
 function finishMultiplayer(results, reason) {
   clearInterval(state.syncTimer);
-  state.syncTimer = null;
+  state.syncTimer = setInterval(() => sendMultiplayer({ type: "sync" }), 30000);
   state.multiplayerFinished = true;
   const ownName = state.playerName;
   const ownResult = results.find(result => result.name === ownName);
@@ -663,6 +746,9 @@ function finishMultiplayer(results, reason) {
       : "Rozhoduje počet uhádnutých štátov; pri zhode čas, za ktorý ich hráč uhádol.";
   renderLeaderboard(elements.leaderboard, results);
   elements.leaderboardWrap.hidden = false;
+  elements.newGame.hidden = true;
+  elements.returnLobby.hidden = !state.host;
+  elements.resultsWaiting.hidden = state.host;
   setScreen("end");
 }
 
@@ -741,6 +827,8 @@ function returnHome() {
   state.gameMode = "classic";
   state.battleRevision = -1;
   state.multiplayerFinished = false;
+  state.round = 0;
+  state.roomCode = "";
   const socket = state.socket;
   state.socket = null;
   if (socket && socket.readyState < WebSocket.CLOSING) socket.close();
@@ -762,7 +850,12 @@ elements.singleMode.addEventListener("change", () => {
 function updateBattleOptions() {
   elements.battleOptions.hidden = elements.hostGameMode.value !== "battle";
 }
-elements.hostGameMode.addEventListener("change", updateBattleOptions);
+elements.hostGameMode.addEventListener("change", () => {
+  updateBattleOptions();
+  publishLobbySettings();
+});
+for (const input of [elements.hostRegion, elements.hostBattleVariant, elements.hostMinutes])
+  input.addEventListener("change", publishLobbySettings);
 window.addEventListener("pageshow", updateBattleOptions);
 updateBattleOptions();
 elements.startSingle.addEventListener("click", startSingleGame);
@@ -774,6 +867,7 @@ elements.startMultiplayer.addEventListener("click", startMultiplayerGame);
 elements.leaveLobby.addEventListener("click", returnHome);
 elements.guessForm.addEventListener("submit", submitGuess);
 elements.newGame.addEventListener("click", returnHome);
+elements.returnLobby.addEventListener("click", () => sendMultiplayer({ type: "return-lobby" }));
 elements.copyInvite.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(elements.inviteLink.value);

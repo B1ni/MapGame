@@ -9,6 +9,153 @@ namespace MapGame.Tests;
 
 public sealed class LanMultiplayerTests
 {
+    [Fact]
+    public async Task TimedRoundReturnsToSameLobbyAndRemovesDisconnectedPlayers()
+    {
+        var clock = new ManualClock();
+        await using var server = await TestServer.StartAsync(clock);
+        using var host = await server.ConnectAsync();
+        using var guest = await server.ConnectAsync();
+        await SendAsync(host, new { type = "create", name = "Host" });
+        var code = (await ReceiveAsync(host)).GetProperty("roomCode").GetString();
+        await SendAsync(guest, new { type = "join", roomCode = code, name = "Guest" });
+        await ReceiveAsync(host);
+        await ReceiveAsync(guest);
+        await SendAsync(host, new { type = "start", regionId = "europe", timeLimitSeconds = 60 });
+        await ReceiveAsync(host);
+        await ReceiveAsync(guest);
+        guest.Abort();
+        Assert.Equal("lobby-update", (await ReceiveAsync(host)).GetProperty("type").GetString());
+        clock.Advance(TimeSpan.FromSeconds(61));
+        await server.Rooms.CleanupAsync();
+        Assert.Equal("finished", (await ReceiveAsync(host)).GetProperty("type").GetString());
+        await SendAsync(host, new { type = "return-lobby" });
+        var lobby = await ReceiveAsync(host);
+        Assert.Single(lobby.GetProperty("players").EnumerateArray());
+        Assert.Equal(code, lobby.GetProperty("roomCode").GetString());
+        using var replacement = await server.ConnectAsync();
+        await SendAsync(replacement, new { type = "join", roomCode = code, name = "Guest" });
+        await ReceiveAsync(host);
+        Assert.Equal("lobby-update", (await ReceiveAsync(replacement)).GetProperty("type").GetString());
+        await SendAsync(host, new { type = "start" });
+        Assert.Equal("game-started", (await ReceiveAsync(host)).GetProperty("type").GetString());
+        var nextRound = await ReceiveAsync(replacement);
+        Assert.All(nextRound.GetProperty("leaderboard").EnumerateArray(),
+            entry => Assert.Equal(0, entry.GetProperty("guessedCount").GetInt32()));
+    }
+
+    [Fact]
+    public async Task LobbySettingsAndReturnPreserveConnectionsAndResetEveryRoundWithPrivateHistories()
+    {
+        await using var server = await TestServer.StartAsync(catalog: CreateBattleCatalog());
+        using var host = await server.ConnectAsync();
+        using var guest = await server.ConnectAsync();
+        await SendAsync(host, new { type = "create", name = "Host" });
+        var lobby = await ReceiveAsync(host);
+        var code = lobby.GetProperty("roomCode").GetString();
+        await SendAsync(guest, new { type = "join", roomCode = code, name = "Guest" });
+        await ReceiveAsync(host);
+        await ReceiveAsync(guest);
+        await SendAsync(guest, new { type = "configure", regionId = "test", timeLimitSeconds = 60, gameMode = "classic" });
+        Assert.Equal("error", (await ReceiveAsync(guest)).GetProperty("type").GetString());
+        await SendAsync(host, new { type = "configure", regionId = "test", timeLimitSeconds = 0, gameMode = "classic" });
+        Assert.Equal("error", (await ReceiveAsync(host)).GetProperty("type").GetString());
+        var previousRound = 0;
+        foreach (var mode in new[] { "classic", "battle-normal", "battle-hardcore" })
+        {
+            await SendAsync(host, new { type = "configure", regionId = "test", timeLimitSeconds = 60, gameMode = mode });
+            foreach (var socket in new[] { host, guest })
+            {
+                lobby = await ReceiveAsync(socket);
+                Assert.Equal(mode, lobby.GetProperty("settings").GetProperty("gameMode").GetString());
+                Assert.Equal("test", lobby.GetProperty("settings").GetProperty("regionId").GetString());
+                Assert.Equal(60, lobby.GetProperty("settings").GetProperty("timeLimitSeconds").GetInt32());
+            }
+            await SendAsync(host, new { type = "start" });
+            var start = await ReceiveAsync(host);
+            await ReceiveAsync(guest);
+            Assert.Equal(mode, start.GetProperty("gameMode").GetString());
+            Assert.True(start.GetProperty("round").GetInt32() > previousRound);
+            previousRound = start.GetProperty("round").GetInt32();
+            Assert.Empty(start.GetProperty("ownership").EnumerateArray());
+            Assert.All(start.GetProperty("leaderboard").EnumerateArray(),
+                entry => Assert.Equal(0, entry.GetProperty("guessedCount").GetInt32()));
+            await SendAsync(guest, new { type = "return-lobby" });
+            Assert.Equal("error", (await ReceiveAsync(guest)).GetProperty("type").GetString());
+            await SendAsync(host, new { type = "guess", guess = "Alpha" });
+            var claim = await ReceiveAsync(host);
+            if (mode == "classic")
+            {
+                Assert.Equal("Alpha", claim.GetProperty("history")[0].GetProperty("name").GetString());
+                await SendAsync(guest, new { type = "sync" });
+            }
+            var guestTick = await ReceiveAsync(guest);
+            Assert.Equal(mode == "classic" ? 0 : 1, guestTick.GetProperty("claimedCount").GetInt32());
+            Assert.Equal(2, guestTick.GetProperty("totalCount").GetInt32());
+            if (mode == "battle-hardcore")
+            {
+                Assert.Equal(JsonValueKind.Null, guestTick.GetProperty("history").ValueKind);
+                Assert.Equal(JsonValueKind.Null, claim.GetProperty("history").ValueKind);
+            }
+            else if (mode == "classic")
+                Assert.Empty(guestTick.GetProperty("history").EnumerateArray());
+            else
+            {
+                Assert.Equal("Alpha", guestTick.GetProperty("history")[0].GetProperty("name").GetString());
+                Assert.Equal("Host", guestTick.GetProperty("history")[0].GetProperty("player").GetString());
+            }
+            await SendAsync(host, new { type = "end" });
+            foreach (var socket in new[] { host, guest })
+                Assert.Equal("finished", (await ReceiveAsync(socket)).GetProperty("type").GetString());
+            await SendAsync(guest, new { type = "return-lobby" });
+            Assert.Equal("error", (await ReceiveAsync(guest)).GetProperty("type").GetString());
+            await SendAsync(host, new { type = "return-lobby" });
+            foreach (var socket in new[] { host, guest })
+            {
+                lobby = await ReceiveAsync(socket);
+                Assert.Equal("lobby-update", lobby.GetProperty("type").GetString());
+                Assert.True(lobby.GetProperty("returned").GetBoolean());
+                Assert.Equal("lobby", lobby.GetProperty("status").GetString());
+                Assert.Equal(code, lobby.GetProperty("roomCode").GetString());
+                Assert.Equal(2, lobby.GetProperty("players").GetArrayLength());
+                Assert.True(lobby.GetProperty("round").GetInt32() > previousRound);
+                Assert.Equal(WebSocketState.Open, socket.State);
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("classic")]
+    [InlineData("battle-normal")]
+    [InlineData("battle-hardcore")]
+    public async Task EuropeAcceptsKosovoAsLastCountryInEveryMultiplayerMode(string mode)
+    {
+        await using var server = await TestServer.StartAsync();
+        using var host = await server.ConnectAsync();
+        await SendAsync(host, new { type = "create", name = "Host" });
+        await ReceiveAsync(host);
+        await SendAsync(host, new { type = "start", regionId = "europe", timeLimitSeconds = 60, gameMode = mode });
+        await ReceiveAsync(host);
+        using var stream = typeof(GameCatalog).Assembly.GetManifestResourceStream("MapGame.Data.maps.json")!;
+        foreach (var feature in GameCatalog.Load(stream).GetRegion("europe").Features.Where(feature => feature.Id != "KOS"))
+        {
+            await SendAsync(host, new { type = "guess", guess = feature.Name });
+            Assert.Equal("correct", (await ReceiveAsync(host)).GetProperty("outcome").GetString());
+        }
+        await SendAsync(host, new { type = "guess", guess = "Kosovo" });
+        var reply = await ReceiveAsync(host);
+        if (mode == "classic")
+        {
+            Assert.Equal("correct", reply.GetProperty("outcome").GetString());
+            Assert.Contains(reply.GetProperty("foundIds").EnumerateArray(), id => id.GetString() == "KOS");
+            await SendAsync(host, new { type = "end" });
+            reply = await ReceiveAsync(host);
+        }
+        Assert.Equal("finished", reply.GetProperty("type").GetString());
+        Assert.Equal(49, reply.GetProperty("results")[0].GetProperty("guessedCount").GetInt32());
+        Assert.Equal(49, reply.GetProperty("results")[0].GetProperty("totalCount").GetInt32());
+    }
+
     [Theory]
     [InlineData("battle-normal")]
     [InlineData("battle-hardcore")]

@@ -202,7 +202,8 @@ public sealed record GameView(
     int? LivesRemaining,
     int? GuessedCount,
     int? TotalCount,
-    string? EndReason);
+    string? EndReason,
+    string[] History);
 
 public enum GameMode
 {
@@ -282,7 +283,8 @@ internal sealed class GameSession
             LivesRemaining,
             finished ? FoundIds.Count : null,
             finished ? Region.Features.Count : null,
-            EndReason);
+            EndReason,
+            FoundIds.Select(id => Region.Features.Single(feature => feature.Id == id).Name).ToArray());
     }
 
     private int RemainingSeconds(DateTimeOffset now)

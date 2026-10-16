@@ -62,6 +62,32 @@
     }
   },
   "features": {
+    "USA": {
+      "names": {
+        "sk": {
+          "name": "Spojené štáty americké",
+          "aliases": ["Spojené štáty", "Amerika"]
+        },
+        "en": {
+          "name": "United States of America",
+          "aliases": ["United States", "America"]
+        }
+      },
+      "codes": ["US", "USA"]
+    },
+    "KOS": {
+      "names": {
+        "sk": {
+          "name": "Kosovo",
+          "aliases": ["Kosovská republika"]
+        },
+        "en": {
+          "name": "Kosovo",
+          "aliases": ["Republic of Kosovo"]
+        }
+      },
+      "codes": ["XK", "XKX", "KOS"]
+    },
     "ALB": {
       "names": {
         "sk": {

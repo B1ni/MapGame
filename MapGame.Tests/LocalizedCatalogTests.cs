@@ -16,15 +16,35 @@ public sealed class LocalizedCatalogTests
         typeof(GameCatalog).Assembly.GetManifestResourceStream($"MapGame.Data.{name}")!;
 
     [Fact]
+    public void NorthAmericaIncludesUsaAsOneCountryWhileUsMapKeepsFiftyStatesAndSingleHistory()
+    {
+        var catalog = Load();
+        foreach (var alias in new[] { "USA", "US", "Spojene staty americke", "United States", "America", "Amerika" })
+            Assert.Equal("USA", catalog.FindAnswer("north-america", alias)?.Id);
+        Assert.Equal("US-CA", catalog.FindAnswer("usa", "California")?.Id);
+        Assert.Equal(50, catalog.GetRegion("usa").Features.Count);
+        Assert.Null(catalog.FindAnswer("usa", "USA"));
+        var games = new SinglePlayerGameManager(catalog, TimeProvider.System);
+        var game = games.Start(new("north-america", "lives", null, 5));
+        Assert.Empty(game.History);
+        var reply = games.Guess(game.Id, "USA")!;
+        Assert.Equal("correct", reply.Outcome);
+        Assert.Equal(new[] { "Spojené štáty americké" }, reply.Game.History);
+        Assert.Null(reply.Game.GuessedCount);
+        Assert.Equal("already-found", games.Guess(game.Id, "United States")!.Outcome);
+        Assert.Single(games.Get(game.Id)!.History);
+    }
+
+    [Fact]
     public void EveryRegionAndFeatureHasBothLanguagesAndEveryNameAndCodeResolves()
     {
         var catalog = Load();
         var counts = new Dictionary<string, int>
         {
-            ["europe"] = 48, ["asia"] = 46, ["north-america"] = 22,
+            ["europe"] = 49, ["asia"] = 46, ["north-america"] = 23,
             ["south-america"] = 12, ["africa"] = 54, ["usa"] = 50
         };
-        Assert.Equal(232, catalog.Regions.Sum(region => region.Features.Count));
+        Assert.Equal(234, catalog.Regions.Sum(region => region.Features.Count));
         Assert.Equal(counts.Keys.Order(), catalog.Regions.Select(region => region.Id).Order());
         foreach (var region in catalog.Regions)
         {
@@ -49,6 +69,29 @@ public sealed class LocalizedCatalogTests
                     Assert.Equal(feature.Id, catalog.FindAnswer("usa", feature.Id[3..])?.Id);
             }
         }
+    }
+
+    [Theory]
+    [InlineData("Kosovo")]
+    [InlineData("KOSOVO")]
+    [InlineData("Kosovska republika")]
+    [InlineData("Republic of Kosovo")]
+    [InlineData("XK")]
+    [InlineData("XKX")]
+    [InlineData("KOS")]
+    public void KosovoCanBeGuessedLastAndCompletesEurope(string answer)
+    {
+        var catalog = Load();
+        Assert.Equal("KOS", catalog.FindAnswer("europe", answer)?.Id);
+        var games = new SinglePlayerGameManager(catalog, TimeProvider.System);
+        var game = games.Start(new("europe", "lives", null, 5));
+        foreach (var feature in catalog.GetRegion("europe").Features.Where(feature => feature.Id != "KOS"))
+            Assert.Equal("correct", games.Guess(game.Id, feature.Name)!.Outcome);
+        var reply = games.Guess(game.Id, answer)!;
+        Assert.Contains("KOS", reply.Game.FoundIds);
+        Assert.Equal("finished", reply.Game.Status);
+        Assert.Equal(49, reply.Game.GuessedCount);
+        Assert.Equal(49, reply.Game.TotalCount);
     }
 
     [Fact]

@@ -33,4 +33,19 @@ https://www.naturalearthdata.com/about/terms-of-use/
 
 Reproduction (Python standard library only, from repository root):
   python tools\refresh-map-shapes.py --import-uk
-Without --import-uk, the script only regenerates the public geometry file.
+Without import flags, the script only regenerates the public geometry file.
+
+Kosovo (added as a separate European answer):
+  Same dataset, release, URL and SHA-256 as above.
+  SU_A3 KOS -> stable feature ID KOS, exact unmodified source geometry.
+  The existing Serbian outline is unchanged and excludes Kosovo; the two
+  outlines share 36 identical boundary segments.
+  XK/XKX are commonly used user-assigned codes, not official ISO assignments.
+  Reproduction: python tools\refresh-map-shapes.py --import-kosovo
+
+United States of America (one country in North America):
+  Same dataset, release, URL and SHA-256 as above.
+  SU_A3 USB (contiguous USA), USK (Alaska), USH (Hawaii) polygon arrays
+  are combined into one MultiPolygon feature USA without coordinate changes.
+  The separate USA region retains all 50 individual state geometries.
+  Reproduction: python tools\refresh-map-shapes.py --import-usa

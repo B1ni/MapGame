@@ -45,7 +45,7 @@ public sealed class LanRoomManager(
                     results = FinishRoom(room);
                     room.FinishedAt = now;
                 }
-                expired = (room.Status == "lobby" && now - room.CreatedAt >= TimeSpan.FromMinutes(30))
+                expired = (room.Status == "lobby" && now - room.LobbySince >= TimeSpan.FromMinutes(30))
                     || (room.Status == "finished" && now - room.FinishedAt >= TimeSpan.FromMinutes(15))
                     || now - room.CreatedAt >= TimeSpan.FromHours(4)
                     || peers.Count == 0;
@@ -133,6 +133,12 @@ public sealed class LanRoomManager(
                 break;
             case "start":
                 await StartGameAsync(peer, message.RegionId, message.TimeLimitSeconds, message.GameMode, cancellationToken);
+                break;
+            case "configure":
+                await ConfigureRoomAsync(peer, message, cancellationToken);
+                break;
+            case "return-lobby":
+                await ReturnToLobbyAsync(peer, cancellationToken);
                 break;
             case "guess":
                 await SubmitGuessAsync(peer, message.Guess, cancellationToken);
@@ -260,6 +266,15 @@ public sealed class LanRoomManager(
             return;
         }
 
+        lock (room.SyncRoot)
+        {
+            if (regionId is null && timeLimitSeconds is null && gameMode is null)
+            {
+                regionId = room.Settings.RegionId;
+                timeLimitSeconds = room.Settings.TimeLimitSeconds;
+                gameMode = room.Settings.GameMode;
+            }
+        }
         gameMode ??= "classic";
         if (gameMode is not ("classic" or "battle-normal" or "battle-hardcore"))
         {
@@ -308,7 +323,13 @@ public sealed class LanRoomManager(
             {
                 region = selectedRegion;
                 room.Region = region;
+                room.Settings = new(regionId!, gameMode, timeLimitSeconds.Value);
                 room.GameMode = gameMode;
+                room.Round++;
+                room.Owners.Clear();
+                room.Revision = 0;
+                room.Results = null;
+                room.FinishedAt = null;
                 room.StartedAt = timeProvider.GetUtcNow();
                 room.EndsAt = room.StartedAt.Value.AddSeconds(timeLimitSeconds.GetValueOrDefault());
                 room.Status = "playing";
@@ -340,6 +361,10 @@ public sealed class LanRoomManager(
                 regionId = region.Id,
                 regionName = region.Name,
                 gameMode,
+                round = room.Round,
+                history = Array.Empty<GuessHistoryEntry>(),
+                claimedCount = 0,
+                totalCount = region.Features.Count,
                 ownership = Array.Empty<OwnedCountry>(),
                 revision = room.Revision,
                 leaderboard,
@@ -414,6 +439,10 @@ public sealed class LanRoomManager(
                         foundIds = player.FoundIds.ToArray(),
                         leaderboard = BuildLeaderboard(room),
                         ownership = BuildOwnership(room),
+                        history = BuildHistory(room, player),
+                        claimedCount = room.Owners.Count,
+                        totalCount = room.Region.Features.Count,
+                        round = room.Round,
                         revision = room.Revision
                     };
                     if (room.IsBattle && room.Owners.Count == room.Region.Features.Count)
@@ -434,6 +463,75 @@ public sealed class LanRoomManager(
             await SendAsync(peer, response, cancellationToken);
             if (ownershipChanged) await SendBattleUpdateAsync(room, peer, cancellationToken);
         }
+    }
+
+    private async Task ConfigureRoomAsync(LanPeer peer, LanClientMessage message, CancellationToken cancellationToken)
+    {
+        if (!TryGetRoom(peer, out var room))
+        {
+            await SendErrorAsync(peer, "Najprv sa pripoj k hre.", cancellationToken);
+            return;
+        }
+        var valid = message.RegionId is not null
+            && (message.RegionId == "random" || catalog.Regions.Any(region => region.Id == message.RegionId))
+            && message.GameMode is "classic" or "battle-normal" or "battle-hardcore"
+            && message.TimeLimitSeconds is >= MinimumDurationSeconds and <= MaximumDurationSeconds;
+        var updated = false;
+        lock (room.SyncRoot)
+        {
+            if (valid && room.Status == "lobby" && FindPlayer(room, peer)?.IsHost == true)
+            {
+                room.Settings = new(message.RegionId!, message.GameMode!, message.TimeLimitSeconds!.Value);
+                updated = true;
+            }
+        }
+        if (!updated)
+        {
+            await SendErrorAsync(peer, "Nastavenia môže meniť iba hostiteľ v čakárni. Skontroluj mapu, režim a čas 1 až 120 minút.", cancellationToken);
+            return;
+        }
+        await SendLobbyUpdateAsync(room, cancellationToken);
+    }
+
+    private async Task ReturnToLobbyAsync(LanPeer peer, CancellationToken cancellationToken)
+    {
+        if (!TryGetRoom(peer, out var room))
+        {
+            await SendErrorAsync(peer, "Najprv sa pripoj k hre.", cancellationToken);
+            return;
+        }
+        var returned = false;
+        lock (room.SyncRoot)
+        {
+            if (room.Status == "finished" && FindPlayer(room, peer)?.IsHost == true)
+            {
+                foreach (var player in room.Players.Values.Where(player => player.Peer is null).ToArray())
+                    room.Players.Remove(player.Id);
+                foreach (var player in room.Players.Values)
+                {
+                    player.FoundIds.Clear();
+                    player.SecondsAtBestScore = 0;
+                    player.IsActive = true;
+                }
+                room.Status = "lobby";
+                room.Round++;
+                room.LobbySince = timeProvider.GetUtcNow();
+                room.Region = null;
+                room.Results = null;
+                room.FinishedAt = null;
+                room.StartedAt = null;
+                room.EndsAt = null;
+                room.Owners.Clear();
+                room.Revision = 0;
+                returned = true;
+            }
+        }
+        if (!returned)
+        {
+            await SendErrorAsync(peer, "Do čakárne môže vrátiť hráčov iba hostiteľ po skončení hry.", cancellationToken);
+            return;
+        }
+        await SendLobbyUpdateAsync(room, cancellationToken, returned: true);
     }
 
     private async Task SyncAsync(LanPeer peer, CancellationToken cancellationToken)
@@ -532,12 +630,14 @@ public sealed class LanRoomManager(
         }
     }
 
-    private async Task SendLobbyUpdateAsync(LanRoom room, CancellationToken cancellationToken)
+    private async Task SendLobbyUpdateAsync(LanRoom room, CancellationToken cancellationToken, bool returned = false)
     {
         IReadOnlyList<LanPeer> peers;
         object[] players;
         string status;
         string code;
+        LobbySettings settings;
+        int round;
         lock (room.SyncRoot)
         {
             peers = ConnectedPeers(room);
@@ -547,6 +647,8 @@ public sealed class LanRoomManager(
                 .ToArray();
             status = room.Status;
             code = room.Code;
+            settings = room.Settings;
+            round = room.Round;
         }
 
         await Task.WhenAll(peers.Select(target => SendAsync(
@@ -557,6 +659,9 @@ public sealed class LanRoomManager(
                 roomCode = code,
                 status,
                 players,
+                settings,
+                round,
+                returned,
                 isHost = target.IsHost
             },
             cancellationToken)));
@@ -584,7 +689,7 @@ public sealed class LanRoomManager(
             peer.RoomCode = null;
             peer.PlayerId = null;
 
-            if (room.Status != "finished" && player.IsHost)
+            if (player.IsHost)
             {
                 closedRoomPeers = ConnectedPeers(room);
                 deleteRoom = true;
@@ -626,12 +731,19 @@ public sealed class LanRoomManager(
         CancellationToken cancellationToken,
         string? reason = null)
     {
-        OwnedCountry[] ownership;
-        lock (room.SyncRoot) ownership = BuildOwnership(room);
-        await Task.WhenAll(peers.Select(target => SendAsync(
-            target,
-            new { type = "finished", results, reason, gameMode = room.GameMode, ownership, revision = room.Revision },
-            cancellationToken)));
+        (LanPeer Peer, object Message)[] updates;
+        lock (room.SyncRoot)
+        {
+            if (room.Status != "finished" || room.Results != results) return;
+            updates = peers.Select(target => (target, (object)new
+            {
+                type = "finished", results, reason, gameMode = room.GameMode,
+                ownership = BuildOwnership(room), revision = room.Revision, round = room.Round,
+                claimedCount = room.Owners.Count, totalCount = room.Region!.Features.Count,
+                history = FindPlayer(room, target) is { } player ? BuildHistory(room, player) : null
+            })).ToArray();
+        }
+        await Task.WhenAll(updates.Select(update => SendAsync(update.Peer, update.Message, cancellationToken)));
     }
 
     private object BuildTick(LanRoom room, LanPlayer player) => new
@@ -641,12 +753,25 @@ public sealed class LanRoomManager(
         foundIds = player.FoundIds.ToArray(),
         leaderboard = BuildLeaderboard(room),
         ownership = BuildOwnership(room),
+        history = BuildHistory(room, player),
+        claimedCount = room.Owners.Count,
+        totalCount = room.Region!.Features.Count,
+        round = room.Round,
         revision = room.Revision
     };
 
     private static OwnedCountry[] BuildOwnership(LanRoom room) => room.Owners
         .Select(entry => new OwnedCountry(entry.Key, room.Players[entry.Value].Color))
         .ToArray();
+
+    private static GuessHistoryEntry[]? BuildHistory(LanRoom room, LanPlayer player)
+    {
+        if (room.GameMode == "battle-hardcore") return null;
+        var ids = room.IsBattle ? room.Owners.Keys : player.FoundIds.AsEnumerable();
+        return ids.Select(id => new GuessHistoryEntry(id,
+            room.Region!.Features.Single(feature => feature.Id == id).Name,
+            room.IsBattle ? room.Players[room.Owners[id]].Name : player.Name)).ToArray();
+    }
 
     private async Task SendBattleUpdateAsync(LanRoom room, LanPeer sender, CancellationToken cancellationToken)
     {
@@ -814,6 +939,9 @@ public sealed class LanRoomManager(
         public object SyncRoot { get; } = new();
         public string Code { get; } = code;
         public DateTimeOffset CreatedAt { get; } = createdAt;
+        public DateTimeOffset LobbySince { get; set; } = createdAt;
+        public LobbySettings Settings { get; set; } = new("europe", "classic", 300);
+        public int Round { get; set; }
         public DateTimeOffset? FinishedAt { get; set; }
         public Dictionary<string, LanPlayer> Players { get; } = new(StringComparer.Ordinal);
         public string Status { get; set; } = "lobby";
@@ -903,6 +1031,8 @@ public sealed class LanRoomManager(
     }
 
     private sealed record OwnedCountry(string Id, string Color);
+    private sealed record GuessHistoryEntry(string Id, string Name, string Player);
+    private sealed record LobbySettings(string RegionId, string GameMode, int TimeLimitSeconds);
 
     private sealed record LeaderboardEntry(
         int Place,

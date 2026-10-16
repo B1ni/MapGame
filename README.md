@@ -40,7 +40,7 @@ Render ukončuje TLS pred kontajnerom; kontajner počúva na HTTP `0.0.0.0:$PORT
 
 Na Render sú technické logy v **Dashboard → služba → Logs** (stdout/stderr). Súborové logy sú v Docker režime vypnuté; ak ich zapneš, sú len na efemérnom disku a pri reštarte/deployi sa stratia. Žiadne hráčske mená, tipy ani odpovede sa do serverových logov nezapisujú. Server neukladá voľný text klientských diagnostických udalostí; plný klientský technický report zostáva dostupný cez **Stiahnuť diagnostiku pripojenia** v prehliadači.
 
-Pred zdieľaním verejnej URL over `/health`, vytvorenie lobby, pripojenie z druhého zariadenia, spustenie zápasu, súkromné vyfarbovanie mapy a výsledky až po skončení. GitHub/Render účty a tento finálny verejný smoke test sú kroky vlastníka služby.
+Pred zdieľaním verejnej URL over `/health`, vytvorenie lobby, pripojenie z druhého zariadenia, zdieľané nastavenia, spustenie zápasu, súkromné klasické/spoločné Battle mapy, históriu podľa režimu, výsledky a návrat všetkých do rovnakej lobby. GitHub/Render účty a tento finálny verejný smoke test sú kroky vlastníka služby.
 
 Zdroje podmienok: [Render Free](https://render.com/docs/free), [Docker deploy](https://render.com/docs/docker), [Web Services](https://render.com/docs/web-services). Limity a registračné podmienky sa môžu meniť.
 
@@ -60,6 +60,8 @@ Predvolené lokálne nastavenie je `Hosting:Mode=Lan` (nie je určené na intern
 V oboch prípadoch musia byť zariadenia pripojené k rovnakej Wi-Fi/LAN sieti. Hostiteľ musí nechať svoju aplikáciu spustenú počas hry.
 
 Každý hráč vrátane hostiteľa zadá **vlastné meno v multiplayeri**; v jednej čakárni musia byť mená odlišné. Čakáreň sa otvorí až po potvrdení serverom a všetkým zobrazuje mená aktuálne pripojených hráčov.
+
+Pri vytvorení lobby sa vyplní iba meno. **Mapu, herný režim, variant Battle a čas nastavuje hostiteľ priamo v lobby**; všetci hráči vidia aktuálne nastavenia. Po zápase sa zobrazia výsledky a spojenia zostávajú otvorené. Hostiteľ stlačí **Vrátiť všetkých do lobby**: všetci pripojení hráči sa vrátia do tej istej čakárne s rovnakým ID a môžu hrať ďalší zápas. Skóre, obsadenie mapy a história sa pred ďalším kolom vyčistia. Odpojení hráči sa z novej čakárne odstránia. Reštart servera alebo odchod hostiteľa spojenia stále ukončí; po deployi treba vytvoriť novú lobby.
 
 Ak má hostiteľ viac sieťových adaptérov, v čakárni vyberie v poli **Sieť hostiteľa** adresu Wi-Fi/LAN, ku ktorej sú pripojení aj ostatní. Odkaz a adresa pre stiahnutých klientov sa aktualizujú podľa výberu. Adresy s bránou majú prednosť, no pri VPN alebo viacerých aktívnych sieťach treba skontrolovať správnu adresu. Stiahnutý klient môže zadať aj samotnú IPv4 adresu; aplikácia doplní `http://` a port `5080`.
 
@@ -84,13 +86,17 @@ Pri kopírovaní alebo zdieľaní zachovaj celý priečinok vrátane `wwwroot` a
 - **Na čas:** vyber mapu alebo náhodný región a limit od 1 do 120 minút.
 - **Na životy:** vyber mapu alebo náhodný región a 1 až 5 životov. Nesprávny alebo opakovaný tip odoberie život.
 - **Multiplayer:** hostiteľ zvolí mapu a časový limit. V online aj LAN hre je počas celého zápasu nad mapou priebežný rebríček všetkých hráčov s počtom uhádnutých štátov, obnovovaný každú sekundu. Poradie určuje počet odpovedí a pri zhode čas dosiahnutia skóre; rovnaké pravidlá platia pre konečné výsledky. Každý hráč na svojej mape naďalej vidí iba vlastné uhádnuté štáty.
-- **Map Battle (online aj LAN multiplayer):** hostiteľ zvolí **Herný režim → Map Battle** a variant **Normal** alebo **Hardcore** ešte pred spustením zápasu. Každý hráč má vlastnú farbu zobrazenú pri mene v rebríčku; všetci vidia tú istú mapu s farbami aktuálnych vlastníkov. Každý vlastnený štát je jeden bod. V **Normal** štát získa prvý hráč a ďalší ho už obsadiť nemôžu. V **Hardcore** správna odpoveď ukradne súperov štát: súper stratí bod a nový vlastník ho získa. Štát možno kradnúť opakovane; vlastný štát ani jeho alias nepridá ďalší bod.
+- **Map Battle (online aj LAN multiplayer):** hostiteľ zvolí priamo v lobby **Herný režim → Map Battle** a variant **Normal** alebo **Hardcore**. Každý hráč má vlastnú farbu zobrazenú pri mene v rebríčku; všetci vidia tú istú mapu s farbami aktuálnych vlastníkov. Každý vlastnený štát je jeden bod. V **Normal** štát získa prvý hráč a ďalší ho už obsadiť nemôžu. V **Hardcore** správna odpoveď ukradne súperov štát: súper stratí bod a nový vlastník ho získa. Štát možno kradnúť opakovane; vlastný štát ani jeho alias nepridá ďalší bod.
 
 Map Battle skončí **uplynutím času alebo ihneď po obsadení posledného voľného štátu**, aj v Hardcore (potom už kradnutie nepokračuje). Vyhrá najvyšší počet vlastnených štátov; rovnosť bodov znamená remízu, čas nerozhoduje. Hostiteľ môže hru ukončiť predčasne. Odídenému/odpojenému hosťovi zostávajú jeho štáty a skóre; v Hardcore ich možno ukradnúť, v Normal zostávajú obsadené. Odpojenie hostiteľa zatvorí hru rovnako ako v klasickej súťaži. Klasická súťaž a singleplayer zachovávajú pôvodné pravidlá.
 
 V singleplayeri sa počas hry počet uhádnutých štátov nezobrazuje. Správne uhádnuté štáty sa na mape zafarbia nazeleno. Mapa zaberá väčšiu časť obrazovky a dá sa posúvať potiahnutím; priblíženie a oddialenie funguje kolieskom myši alebo tlačidlami +/−. Tlačidlo s percentami vráti pôvodný pohľad.
 
 ### Názvy a odpovede (slovenčina aj angličtina)
+
+Počas singleplayera a klasickej multiplayer súťaže je pod odpoveďou **história vlastných správnych odpovedí**. V **Battle Normal** vidia všetci spoločnú históriu obsadených štátov aj meno hráča, ktorý ich získal. **Hardcore históriu neposiela ani nezobrazuje**, aby neodhaľovala odpovede súperom. Nejde o technické súborové logy: tie naďalej neukladajú hráčske mená ani tipy. Battle nad rebríčkom zobrazuje aj celkový počet **Obsadené štáty: X / Y**, počítaný podľa unikátnych obsadených území; kradnutie ho nezvyšuje.
+
+V mape **Severná Amerika** sú **Spojené štáty americké jedna odpoveď** (`USA`, `US`, `Spojené štáty americké`, `United States`, aj bez diakritiky). Ich obrys zahŕňa pevninské USA, Aljašku aj Havaj. Samostatná mapa **Spojené štáty americké** naďalej obsahuje 50 jednotlivých štátov (`California`, `Texas`, atď.). Ikonka v karte prehliadača a logo v hlavičke používajú vlastný vektorový obrázok `wwwroot\favicon.svg`, ktorý je súčasťou offline balíka.
 
 Všetky krajiny aj 50 štátov USA majú slovenský a anglický názov. **Oba jazyky prijíma hra súčasne**, bez prepínania a bez nutnosti diakritiky; rozhranie zostáva slovenské. Prijímajú sa aj ISO alpha-2/alpha-3 kódy krajín (napr. `SK`, `SVK`), americké poštové skratky (`CA`, `NY`) a vybrané bežné alternatívy (`Turkey`, `UAE`, `JAR`). Skratky sa vyhodnocujú iba v zvolenej mape. Nejednoznačné aliasy sa neprijímajú (napr. samotné slovenské `Kongo`). Iný jazyk alebo alias už uhádnutej krajiny je opakovaný tip, nie ďalší bod; v režime na životy odoberie život.
 
@@ -103,7 +109,9 @@ V Európe sú namiesto jedného Spojeného kráľovstva **štyri samostatné odp
 | Wales | Wales | WAL (aj WLS) | GB-WLS |
 | Severné Írsko | Northern Ireland | NIR | GB-NIR |
 
-`ENG`, `SCO`, `WAL`, `NIR` sú zámerne bežné/športové skratky, nie ISO kódy samostatných suverénnych štátov. `UK`, `GB`, `GBR`, `Británia`, `Great Britain` ani `United Kingdom` neuhádnu žiadnu z nich. `Anglicko` vyfarbí iba Anglicko, nie celé Spojené kráľovstvo. Európa má 48 odpovedí; ostatné mapy zostávajú na 46 (Ázia), 22 (Severná Amerika), 12 (Južná Amerika), 54 (Afrika) a 50 (USA).
+`ENG`, `SCO`, `WAL`, `NIR` sú zámerne bežné/športové skratky, nie ISO kódy samostatných suverénnych štátov. `UK`, `GB`, `GBR`, `Británia`, `Great Britain` ani `United Kingdom` neuhádnu žiadnu z nich. `Anglicko` vyfarbí iba Anglicko, nie celé Spojené kráľovstvo. Mapy obsahujú 49 odpovedí (Európa vrátane Kosova), 46 (Ázia), 23 (Severná Amerika vrátane USA), 12 (Južná Amerika), 54 (Afrika) a 50 (USA).
+
+Kosovo má vlastný obrys a odpoveď `Kosovo`, `Kosovská republika` (aj bez diakritiky), `Republic of Kosovo`, `KOS`, `XK` alebo `XKX`. `KOS` je stabilné mapové ID zo zdroja Natural Earth; `XK`/`XKX` sú bežne používané používateľsky pridelené kódy, nie oficiálne ISO pridelenia. Existujúci obrys Srbska Kosovo neobsahuje a zostal nezmenený. Kosovo používa rovnaký zdroj Natural Earth v5.1.2 ako britské krajiny; import možno zopakovať cez `python tools\refresh-map-shapes.py --import-kosovo`.
 
 Tlačidlo **Ukončiť hru** umožní predčasne skončiť a zobraziť výsledok. V multiplayeri môže zápas pre všetkých ukončiť hostiteľ; ostatní hráči môžu iba opustiť zápas.
 
@@ -132,7 +140,7 @@ node --test MapGame.Tests\MultiplayerClientTests.cjs MapGame.Tests\BrowserDiagno
 
 Testy overia pravidlá a skryté skóre, troch WebSocket hráčov, limity a expiráciu, súborové logovanie aj skutočný štart aplikácie v internetovom režime (host/origin kontroly, nedôveryhodné forwarded hlavičky, statické dáta, veľkosť HTTP tela a WebSocket lobby). Node testy pokrývajú pôvodné LAN pozvánky aj online WSS/HTTPS pozvánky a export diagnostiky. Test internetového servera lokálne simuluje TLS termináciu Render; nenahrádza verejný test po deployi.
 
-Katalógové testy navyše kontrolujú všetkých 232 odpovedí, oba jazyky, kódy, aliasy a duplicity, presnú zhodu verejnej/serverovej geometrie a neprístupnosť súboru s odpoveďami. Geografické testy overujú samostatné britské hranice, známe vnútrozemské body, ostrovy, spoločné hraničné úseky (aj s Írskom) a neprítomnosť plošných prekryvov.
+Katalógové testy navyše kontrolujú všetkých 234 odpovedí, oba jazyky, kódy, aliasy a duplicity, presnú zhodu verejnej/serverovej geometrie a neprístupnosť súboru s odpoveďami. Geografické testy overujú samostatné britské hranice, známe vnútrozemské body, ostrovy, spoločné hraničné úseky (aj s Írskom) a neprítomnosť plošných prekryvov.
 
 Voliteľný test v **skutočnom Chromium prehliadači** (Node 22+, bez npm závislostí): spusti lokálny server a samostatný Chrome/Edge s `--remote-debugging-port=9229` a `--user-data-dir=<nový priečinok v projekte>` (nie svoj bežný profil); potom `node MapGame.Tests\BrowserMapSmoke.cjs`. Premenné `MAPGAME_URL` a `MAPGAME_CDP` môžu zmeniť predvolené `http://localhost:5080` a `http://127.0.0.1:9229`. Test otvorí a zatvorí vlastné karty, overí štyri rôzne SVG obrysy, singleplayer aj multiplayer pozvánku, jednotlivé vyfarbenie, aliasy, odmietnutie UK, súkromné klasické mapy aj spoločné Battle farby, kradnutie, remízu a koniec po obsadení celej mapy. Po teste zatvor iba tento testovací prehliadač a odstráň jeho profil; debugging port nevystavuj do internetu.
 

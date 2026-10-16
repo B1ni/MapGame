@@ -49,15 +49,10 @@ button { cursor: pointer; }
 
 .brand strong { color: var(--green); }
 .brand-mark {
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px 10px 10px 3px;
-  background: var(--green);
-  color: white;
-  font-weight: 800;
-  letter-spacing: 0;
+  width: 36px;
+  height: 36px;
+  display: block;
+  border-radius: 9px;
 }
 
 .offline-badge {
@@ -182,6 +177,12 @@ input:focus, select:focus { border-color: #69aa84; box-shadow: 0 0 0 3px rgb(35 
 .live-leaderboard .leaderboard { margin: 0; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
 .live-leaderboard li { flex-wrap: wrap; overflow-wrap: anywhere; }
 .player-color { display: inline-block; width: 12px; height: 12px; margin-right: 8px; border: 1px solid #111; border-radius: 50%; vertical-align: middle; }
+.lobby-settings-summary { padding: 12px; border-radius: 9px; background: #e9f4ed; font-weight: 600; }
+.battle-total { color: var(--green-dark); font-weight: 700; }
+.guess-history { margin: 16px auto; max-width: 760px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: white; }
+.guess-history h2 { margin: 0 0 12px; font-size: 16px; }
+.guess-history ul { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; max-height: 180px; overflow-y: auto; list-style: none; }
+.guess-history li { padding: 6px 10px; border-radius: 8px; background: #edf5ef; font-size: 13px; }
 footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; padding: 20px; border-top: 1px solid rgb(44 83 56 / 9%); color: var(--muted); font-size: 10px; }
 footer a { color: var(--muted); text-decoration: none; }
 footer a:hover { color: var(--green); text-decoration: underline; }

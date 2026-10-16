@@ -34,6 +34,39 @@ public sealed class UkGeometryTests
     }
 
     [Fact]
+    public void UsaCountryIncludesMainlandAlaskaAndHawaii()
+    {
+        using var stream = typeof(GameCatalog).Assembly.GetManifestResourceStream("MapGame.Data.maps.json")!;
+        var catalog = GameCatalog.Load(stream);
+        var usa = Polygons(catalog.GetRegion("north-america").Features.Single(feature => feature.Id == "USA").Geometry);
+        Assert.True(Contains(usa, new(-77.0369, 38.9072)));
+        Assert.True(Contains(usa, new(-149.9003, 61.2181)));
+        Assert.True(Contains(usa, new(-155.6, 19.6)));
+        Assert.False(Contains(usa, new(-99.1332, 19.4326)));
+        Assert.False(Contains(usa, new(-75.6972, 45.4215)));
+    }
+
+    [Fact]
+    public void KosovoHasSeparateOutlineAndSharedBorderWithSerbia()
+    {
+        using var stream = typeof(GameCatalog).Assembly.GetManifestResourceStream("MapGame.Data.maps.json")!;
+        var europe = GameCatalog.Load(stream).GetRegion("europe");
+        var kosovo = Polygons(europe.Features.Single(feature => feature.Id == "KOS").Geometry);
+        var serbia = Polygons(europe.Features.Single(feature => feature.Id == "SRB").Geometry);
+        Assert.True(Contains(kosovo, new(21.1622, 42.6629)));
+        Assert.False(Contains(serbia, new(21.1622, 42.6629)));
+        Assert.True(Contains(serbia, new(20.4489, 44.7866)));
+        Assert.False(Contains(kosovo, new(20.4489, 44.7866)));
+        var edges = Edges(serbia).ToHashSet();
+        Assert.True(Edges(kosovo).Count(edge => edges.Contains(edge) || edges.Contains((edge.B, edge.A))) >= 30);
+        Assert.DoesNotContain(Vertices(kosovo), point => Contains(serbia, point));
+        Assert.DoesNotContain(Vertices(serbia), point => Contains(kosovo, point));
+        foreach (var a in Edges(kosovo))
+        foreach (var b in Edges(serbia))
+            Assert.False(Crosses(a, b));
+    }
+
+    [Fact]
     public void CountriesUseDetailedClosedRealOutlinesAndDoNotOverlap()
     {
         Assert.Equal(5, _shapes.Count);

@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f2f6f2">
   <title>Map Game — slepá mapa sveta</title>
-  <link rel="stylesheet" href="/styles.css?v=battle-options-2">
-  <script src="/diagnostics.js?v=battle-options-2"></script>
-  <script src="/app.js?v=battle-options-2" defer></script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css?v=lobby-3">
+  <script src="/diagnostics.js?v=lobby-3"></script>
+  <script src="/app.js?v=lobby-3" defer></script>
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="/" aria-label="Map Game — úvod">
-      <span class="brand-mark" aria-hidden="true">M</span>
+      <img class="brand-mark" src="/favicon.svg" alt="" width="40" height="40">
       <span>MAP <strong>GAME</strong></span>
     </a>
     <span id="hostingBadge" class="offline-badge">Map Game</span>
@@ -65,25 +66,6 @@
           <label for="playerName">Tvoje meno v multiplayeri</label>
           <input id="playerName" type="text" maxlength="24" placeholder="Zadaj svoje meno" autocomplete="nickname" required>
           <p id="invitationHint" class="muted-copy" hidden></p>
-          <label for="hostRegion">Mapa pre hru</label>
-          <select id="hostRegion"></select>
-          <label for="hostGameMode">Herný režim</label>
-          <select id="hostGameMode">
-            <option value="classic">Klasická súťaž</option>
-            <option value="battle">Map Battle</option>
-          </select>
-          <div id="battleOptions" hidden>
-            <label for="hostBattleVariant">Map Battle variant</label>
-            <select id="hostBattleVariant">
-              <option value="normal">Normal</option>
-              <option value="hardcore">Hardcore</option>
-            </select>
-            <p class="muted-copy">Normal: štát získa prvý hráč. Hardcore: štáty možno kradnúť. Oba varianty končia časovým limitom alebo obsadením celej mapy. Rovnosť bodov znamená remízu.</p>
-          </div>
-          <div class="option-row">
-            <label for="hostMinutes">Časový limit</label>
-            <div class="number-input"><input id="hostMinutes" type="number" min="1" max="120" value="5"><span>min</span></div>
-          </div>
           <button id="createRoom" class="button button-primary button-wide">Vytvoriť hru <span aria-hidden="true">→</span></button>
           <div class="join-divider"><span>alebo sa pripoj k hre</span></div>
           <div id="lanJoinOptions" hidden>
@@ -124,7 +106,27 @@
       <p class="players-label">Hráči v čakárni</p>
       <ul id="playerList" class="player-list"></ul>
       <p id="lobbyStatus" class="muted-copy">Čaká sa na hostiteľa.</p>
+      <p id="lobbySettingsSummary" class="lobby-settings-summary"></p>
       <div id="hostStartOptions" class="host-start-options" hidden>
+        <label for="hostRegion">Mapa pre hru</label>
+        <select id="hostRegion"></select>
+        <label for="hostGameMode">Herný režim</label>
+        <select id="hostGameMode">
+          <option value="classic">Klasická súťaž</option>
+          <option value="battle">Map Battle</option>
+        </select>
+        <div id="battleOptions" hidden>
+          <label for="hostBattleVariant">Map Battle variant</label>
+          <select id="hostBattleVariant">
+            <option value="normal">Normal</option>
+            <option value="hardcore">Hardcore</option>
+          </select>
+          <p class="muted-copy">Normal: štát získa prvý hráč. Hardcore: štáty možno kradnúť. Oba varianty končia časovým limitom alebo obsadením celej mapy. Rovnosť bodov znamená remízu.</p>
+        </div>
+        <div class="option-row">
+          <label for="hostMinutes">Časový limit</label>
+          <div class="number-input"><input id="hostMinutes" type="number" min="1" max="120" value="5"><span>min</span></div>
+        </div>
         <p class="muted-copy">Hru môže spustiť iba jej hostiteľ.</p>
         <button id="startMultiplayer" class="button button-primary button-wide">Spustiť hru <span aria-hidden="true">→</span></button>
       </div>
@@ -148,6 +150,7 @@
       <div id="inviteGameBanner" class="invite-game-banner" hidden></div>
       <aside id="liveLeaderboardWrap" class="live-leaderboard" aria-labelledby="liveLeaderboardTitle" hidden>
         <h2 id="liveLeaderboardTitle">Priebežné poradie</h2>
+        <p id="battleTotal" class="battle-total" hidden></p>
         <ol id="liveLeaderboard" class="leaderboard"></ol>
       </aside>
       <div class="map-card">
@@ -173,6 +176,10 @@
         </div>
         <p id="guessFeedback" class="feedback" aria-live="polite"></p>
       </form>
+      <aside id="guessHistoryWrap" class="guess-history" hidden aria-labelledby="guessHistoryTitle">
+        <h2 id="guessHistoryTitle">Uhádnuté štáty</h2>
+        <ul id="guessHistory"></ul>
+      </aside>
     </section>
 
     <section id="endPanel" class="card end-panel" hidden>
@@ -184,6 +191,9 @@
         <ol id="leaderboard" class="leaderboard"></ol>
       </div>
       <button id="newGame" class="button button-primary">Späť na začiatok</button>
+      <button id="returnLobby" class="button button-primary" hidden>Vrátiť všetkých do lobby</button>
+      <p id="resultsWaiting" class="muted-copy" hidden>Čaká sa, kým hostiteľ vráti hráčov do lobby.</p>
+      <p id="endError" class="error-text" role="alert"></p>
     </section>
   </main>
 

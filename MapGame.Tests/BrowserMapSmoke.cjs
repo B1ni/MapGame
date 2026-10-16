@@ -65,7 +65,7 @@ const debuggerUrl = process.env.MAPGAME_CDP || "http://127.0.0.1:9229";
   };
   const solved = session => evaluate(session, 'Array.from(elements.map.querySelectorAll(".solved")).map(p=>p.dataset.id).sort()');
   const verifyMap = async session => {
-    assert.equal(await evaluate(session, 'elements.map.querySelectorAll("[data-id]").length'), 48);
+    assert.equal(await evaluate(session, 'elements.map.querySelectorAll("[data-id]").length'), 49);
     assert.equal(await evaluate(session, '!!elements.map.querySelector("[data-id=GBR]")'), false);
     const paths = await evaluate(session, `["GB-ENG","GB-SCT","GB-WLS","GB-NIR"].map(id=>{
       const p=elements.map.querySelector('[data-id="'+id+'"]');
@@ -83,6 +83,7 @@ const debuggerUrl = process.env.MAPGAME_CDP || "http://127.0.0.1:9229";
       for (const feature of region.features)
         assert.deepEqual(Object.keys(feature).sort(), ["geometry", "id"]);
     assert.equal((await fetch(`${base}/data/country-names.json`)).status, 404);
+    assert.equal((await fetch(`${base}/favicon.svg`)).status, 200);
 
     const single = await open();
     await evaluate(single, 'elements.singleRegion.value="europe"; elements.startSingle.click()');
@@ -102,6 +103,18 @@ const debuggerUrl = process.env.MAPGAME_CDP || "http://127.0.0.1:9229";
       await waitFor(single, `elements.map.querySelector('[data-id="${id}"]').classList.contains("solved")`);
     }
     assert.deepEqual(await solved(single), ["GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS"]);
+    await guess(single, "Kosovo");
+    await waitFor(single, 'elements.map.querySelector("[data-id=KOS]").classList.contains("solved")');
+    assert.deepEqual(await solved(single), ["GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS", "KOS"]);
+    assert.match(await evaluate(single, "elements.guessHistory.textContent"), /Kosovo/);
+    assert.equal(await evaluate(single, 'document.querySelector(\'link[rel="icon"]\').getAttribute("href")'), "/favicon.svg");
+    await evaluate(single, 'fetch("/api/games/"+state.singleGame.id+"/finish",{method:"POST"}).then(r=>r.json())');
+    await evaluate(single, 'returnHome(); elements.singleRegion.value="north-america"; elements.startSingle.click()');
+    await waitFor(single, '!elements.gamePanel.hidden && elements.map.querySelector("[data-id=USA]")');
+    assert.equal(await evaluate(single, 'elements.map.querySelectorAll("[data-id]").length'), 23);
+    await guess(single, "Spojene staty americke");
+    await waitFor(single, 'elements.map.querySelector("[data-id=USA]").classList.contains("solved")');
+    assert.deepEqual(await solved(single), ["USA"]);
     await evaluate(single, 'fetch("/api/games/"+state.singleGame.id+"/finish",{method:"POST"}).then(r=>r.json())');
 
     const host = await open();
@@ -121,6 +134,8 @@ const debuggerUrl = process.env.MAPGAME_CDP || "http://127.0.0.1:9229";
       await waitFor(guest, `elements.map.querySelector('[data-id="${id}"]').classList.contains("solved")`);
       assert.deepEqual(await solved(host), []);
     }
+    assert.equal(await evaluate(host, "elements.guessHistory.children.length"), 0);
+    assert.equal(await evaluate(guest, "elements.guessHistory.children.length"), 4);
     await guess(guest, "GB-ENG");
     await waitFor(guest, 'elements.guessFeedback.textContent.includes("už máš")');
     await guess(guest, "Británia");
@@ -132,30 +147,41 @@ const debuggerUrl = process.env.MAPGAME_CDP || "http://127.0.0.1:9229";
     assert.match(await evaluate(guest, "elements.leaderboard.textContent"), /Guest/);
 
     for (const variant of ["normal", "hardcore"]) {
-      const battleHost = await open();
-      await evaluate(battleHost, `elements.playerName.value="Battle Host"; elements.hostRegion.value="south-america";
+      const battleHost = host;
+      const battleGuest = guest;
+      await evaluate(battleHost, "elements.returnLobby.click()");
+      for (const session of [battleHost, battleGuest]) {
+        await waitFor(session, "!elements.lobbyPanel.hidden");
+        assert.equal(await evaluate(session, "state.socket.readyState"), 1);
+        assert.equal(await evaluate(session, "state.roomCode"), code);
+        assert.equal(await evaluate(session, "elements.playerList.children.length"), 2);
+      }
+      await evaluate(battleHost, `elements.hostRegion.value="south-america";
         elements.hostGameMode.value="battle"; elements.hostGameMode.dispatchEvent(new Event("change"));
-        elements.hostBattleVariant.value=${JSON.stringify(variant)}; elements.createRoom.click()`);
-      const battleCode = await waitFor(battleHost, '!elements.lobbyPanel.hidden && elements.roomCodeDisplay.textContent');
-      const battleGuest = await open(`${base}/?room=${battleCode}`);
-      await evaluate(battleGuest, 'elements.playerName.value="Battle Guest"; elements.joinRoom.click()');
-      await waitFor(battleHost, "elements.playerList.children.length === 2");
-      await waitFor(battleGuest, "!elements.lobbyPanel.hidden");
+        elements.hostBattleVariant.value=${JSON.stringify(variant)}; elements.hostBattleVariant.dispatchEvent(new Event("change"))`);
+      await waitFor(battleGuest, `elements.lobbySettingsSummary.textContent.includes("${variant === "normal" ? "Normal" : "Hardcore"}")`);
+      assert.equal(await evaluate(battleGuest, "elements.hostStartOptions.hidden"), true);
       await evaluate(battleHost, "elements.startMultiplayer.click()");
       for (const session of [battleHost, battleGuest])
         await waitFor(session, '!elements.gamePanel.hidden && elements.gameModeLabel.textContent.includes("MAP BATTLE")');
       const colors = await evaluate(battleHost, `Object.fromEntries(Array.from(elements.liveLeaderboard.children).map(li=>
         [li.querySelector("span").textContent.replace(/^\\d+\\. /,""),li.querySelector(".player-color").style.backgroundColor]))`);
-      assert.notEqual(colors["Battle Host"], colors["Battle Guest"]);
+      assert.notEqual(colors.Host, colors.Guest);
       const argColor = 'elements.map.querySelector("[data-id=ARG]").style.fill';
       await guess(battleHost, "ARG");
       for (const session of [battleHost, battleGuest])
-        await waitFor(session, `${argColor} === ${JSON.stringify(colors["Battle Host"])}`);
+        await waitFor(session, `${argColor} === ${JSON.stringify(colors.Host)}`);
+      for (const session of [battleHost, battleGuest]) {
+        await waitFor(session, 'elements.battleTotal.textContent === "Obsadené štáty: 1 / 12"');
+        assert.equal(await evaluate(session, "elements.guessHistoryWrap.hidden"), variant === "hardcore");
+        if (variant === "hardcore") assert.equal(await evaluate(session, "elements.guessHistory.children.length"), 0);
+        else await waitFor(session, 'elements.guessHistory.textContent.includes("Argentína")');
+      }
       await guess(battleGuest, "ARG");
       if (variant === "normal") {
         await waitFor(battleGuest, 'elements.guessFeedback.textContent.includes("obsadil")');
         for (const session of [battleHost, battleGuest])
-          assert.equal(await evaluate(session, argColor), colors["Battle Host"]);
+          assert.equal(await evaluate(session, argColor), colors.Host);
         await guess(battleGuest, "BRA");
         await waitFor(battleHost, 'elements.map.querySelector("[data-id=BRA]").style.fill !== ""');
         await evaluate(battleHost, 'sendMultiplayer({type:"end"})');
@@ -166,7 +192,7 @@ const debuggerUrl = process.env.MAPGAME_CDP || "http://127.0.0.1:9229";
         }
       } else {
         for (const session of [battleHost, battleGuest])
-          await waitFor(session, `${argColor} === ${JSON.stringify(colors["Battle Guest"])}`);
+          await waitFor(session, `${argColor} === ${JSON.stringify(colors.Guest)}`);
         assert.deepEqual(await evaluate(battleHost,
           'Array.from(elements.liveLeaderboard.querySelectorAll("strong")).map(s=>s.textContent)'), ["1 / 12", "0 / 12"]);
         const ids = shapes.regions.find(region => region.id === "south-america").features.map(feature => feature.id);
@@ -184,7 +210,7 @@ const debuggerUrl = process.env.MAPGAME_CDP || "http://127.0.0.1:9229";
       }
     }
     assert.deepEqual(exceptions, []);
-    console.log("PASS: Chromium singleplayer + classic + Map Battle Normal/Hardcore; shared colors, stealing, draws, complete-map finish, UK4 aliases, private classic coloring, no leaked answer catalog.");
+    console.log("PASS: Chromium singleplayer, USA country, classic and reusable Battle lobby; private/shared/no Hardcore histories, total occupancy, settings visible to guests, shared colors, stealing, draws, full-map finish, favicon.");
   } finally {
     for (const targetId of targets) await send("Target.closeTarget", { targetId });
     ws.close();

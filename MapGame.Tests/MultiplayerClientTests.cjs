@@ -59,6 +59,47 @@ test("restored Map Battle selection shows variants on pageshow without a change 
   assert.equal(c.element("battleOptions").hidden, true);
 });
 
+test("lobby return keeps socket and ID, updates shared settings and rejects old-round messages", () => {
+  const c = client();
+  c.run('regions.set("europe", {name:"Europa"}); state.multiplayer = true; state.socket = new WebSocket("ws://localhost/ws"); state.socket.readyState = WebSocket.OPEN;');
+  const lobby = { type: "lobby-update", status: "lobby", round: 0, roomCode: "ABC234", isHost: true,
+    players: [{ name: "Host", isHost: true }], settings: { regionId: "europe", gameMode: "classic", timeLimitSeconds: 300 } };
+  c.run(`handleMultiplayerMessage(${JSON.stringify(lobby)}); setScreen("lobby")`);
+  c.element("hostGameMode").value = "battle";
+  c.element("hostGameMode").listeners.change();
+  assert.equal(c.Socket.sockets[0].sent.type, "configure");
+  assert.equal(c.Socket.sockets[0].sent.gameMode, "battle-normal");
+  c.element("hostBattleVariant").value = "hardcore";
+  c.run(`handleMultiplayerMessage(${JSON.stringify({ ...lobby, settings: { ...lobby.settings, gameMode: "battle-normal" } })})`);
+  assert.equal(c.element("hostBattleVariant").value, "hardcore");
+  c.run('state.host = true; state.gameMode = "classic"; state.round = 1; finishMultiplayer([{place:1,name:"Host",guessedCount:0,totalCount:49,seconds:null}])');
+  assert.equal(c.element("returnLobby").hidden, false);
+  assert.equal(c.element("newGame").hidden, true);
+  c.element("returnLobby").listeners.click();
+  assert.equal(c.Socket.sockets[0].sent.type, "return-lobby");
+  c.run(`handleMultiplayerMessage(${JSON.stringify({ ...lobby, round: 2, returned: true })})`);
+  assert.equal(c.element("lobbyPanel").hidden, false);
+  assert.equal(c.Socket.sockets[0].readyState, 1);
+  assert.equal(c.run("state.roomCode"), "ABC234");
+  c.run('handleMultiplayerMessage({type:"finished", round:1, results:[]})');
+  assert.equal(c.element("lobbyPanel").hidden, false);
+  assert.match(c.element("lobbySettingsSummary").textContent, /Klasická.*Europa.*5 min/);
+});
+
+test("guess histories stay private in classic, shared in Normal and absent in Hardcore", () => {
+  const c = client();
+  c.run('state.multiplayer = false; renderGuessHistory(["Slovensko"]);');
+  assert.equal(c.element("guessHistory").children[0].textContent, "Slovensko");
+  c.run('state.multiplayer = true; state.gameMode = "classic"; updateMultiplayerProgress({history:[{name:"Kosovo",player:"Host"}]});');
+  assert.equal(c.element("guessHistory").children[0].textContent, "Kosovo");
+  c.run('state.gameMode = "battle-normal"; updateMultiplayerProgress({revision:1,ownership:[],claimedCount:3,totalCount:49,history:[{name:"Kosovo",player:"Guest"}]});');
+  assert.equal(c.element("guessHistory").children[0].textContent, "Kosovo · Guest");
+  assert.equal(c.element("battleTotal").textContent, "Obsadené štáty: 3 / 49");
+  c.run('state.gameMode = "battle-hardcore"; updateMultiplayerProgress({revision:2,ownership:[],claimedCount:3,totalCount:49,history:null});');
+  assert.equal(c.element("guessHistoryWrap").hidden, true);
+  assert.equal(c.element("guessHistory").children.length, 0);
+});
+
 test("connectMultiplayer requires a player's own name", () => {
   const c = client();
   c.run('connectMultiplayer("create")');

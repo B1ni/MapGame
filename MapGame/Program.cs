@@ -172,7 +172,8 @@ app.UseStaticFiles(new StaticFileOptions
     {
         if (context.File.Name.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
             || context.File.Name.EndsWith(".js", StringComparison.OrdinalIgnoreCase)
-            || context.File.Name.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            || context.File.Name.EndsWith(".css", StringComparison.OrdinalIgnoreCase)
+            || context.File.Name == "map-shapes.json")
             context.Context.Response.Headers.CacheControl = "no-cache";
     }
 });
